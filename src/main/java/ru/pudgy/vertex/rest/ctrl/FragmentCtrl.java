@@ -52,9 +52,8 @@ public class FragmentCtrl {
 
     @Put(value = "/document/{doc}/fragment", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
     HttpResponse<FragmentDto> create(@NotNull UUID doc, @NotNull @Body FragmentNewDto fragmentNewDto) {
-        Fragment newFragment = fragmentMapper.toEntity(fragmentNewDto);
         return SecurityHelper.currentSchema()
-                .map(schema -> fragmentCreateUsecase.execute(schema, doc, newFragment))
+                .map(schema -> fragmentCreateUsecase.execute(schema, doc, fragmentMapper.toEntity(schema, fragmentNewDto)))
                 .map(fragment -> fragmentMapper.toDto(fragment))
                 .map(dto -> HttpResponse.created(dto))
                 .orElseThrow(() -> new NotAuthorizedException("Not authorized"));
@@ -62,9 +61,8 @@ public class FragmentCtrl {
 
     @Post(value = "/document/{doc}/fragment/{fragment}", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
     HttpResponse<FragmentDto> update(@NotNull UUID doc,  @NotNull UUID fragment, @NotNull @Body FragmentDto fragmentDto) {
-        Fragment ufragment = fragmentMapper.toEntity(fragmentDto);
         return SecurityHelper.currentSchema()
-                .map(schema -> fragmentUpdateUsecase.execute(schema, doc, fragment, ufragment))
+                .map(schema -> fragmentUpdateUsecase.execute(schema, doc, fragment, fragmentMapper.toEntity(schema, fragmentDto)))
                 .map(frag -> fragmentMapper.toDto(frag))
                 .map(dto -> HttpResponse.ok().body(dto))
                 .orElseThrow(() -> new NotAuthorizedException("Not authorized"));

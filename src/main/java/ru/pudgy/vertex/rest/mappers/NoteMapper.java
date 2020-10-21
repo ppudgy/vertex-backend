@@ -7,6 +7,7 @@ import org.mapstruct.MappingTarget;
 import ru.pudgy.vertex.cfg.AppMapperConfig;
 import ru.pudgy.vertex.model.entity.Note;
 import ru.pudgy.vertex.model.entity.Purpose;
+import ru.pudgy.vertex.model.entity.Schemata;
 import ru.pudgy.vertex.rest.dto.NoteDto;
 import ru.pudgy.vertex.rest.dto.NoteNewDto;
 import ru.pudgy.vertex.srvc.TextService;
@@ -41,25 +42,19 @@ public abstract class NoteMapper {
     @Mapping(target = "purposeColor", ignore = true)
     public abstract  NoteDto toDto(Note note);
 
-    @AfterMapping
-    public void toEntityAfterMapping(NoteNewDto dto, @MappingTarget Note entity) {
-        entity.setId(UUID.randomUUID());
-        entity.setOrigin(ZonedDateTime.now());
-    }
-
     @Mapping(target ="text", source = "dto.text")
     @Mapping(target ="purpose", source = "dto.purpose")
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "schemata", ignore = true)
-    @Mapping(target = "origin", ignore = true)
-    public abstract Note toEntity(NoteNewDto dto);
+    @Mapping(target = "id", expression = "java(java.util.UUID.randomUUID())")
+    @Mapping(target = "schemata", source = "schema.id")
+    @Mapping(target = "origin", expression = "java(java.time.ZonedDateTime.now())")
+    public abstract Note toEntity(Schemata schema, NoteNewDto dto);
 
     @Mapping(target ="text", source = "dto.text")
     @Mapping(target ="purpose", source = "dto.purpose")
     @Mapping(target = "id", source = "dto.id")
-    @Mapping(target = "schemata", ignore = true)
+    @Mapping(target = "schemata", source = "schema.id")
     @Mapping(target = "origin", source = "dto.origin")
-    public abstract Note toEntity(NoteDto dto);
+    public abstract Note toEntity(Schemata schema, NoteDto dto);
 
 
 }

@@ -13,7 +13,7 @@
   </parent>
 
   <properties>
-    <jdk.version>14</jdk.version>
+    <jdk.version>11</jdk.version>
     <maven.compiler.target>${jdk.version}</maven.compiler.target>
     <maven.compiler.source>${jdk.version}</maven.compiler.source>
     <maven.compiler.release>${jdk.version}</maven.compiler.release>

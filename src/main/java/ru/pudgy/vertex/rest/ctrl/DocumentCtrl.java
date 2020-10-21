@@ -77,9 +77,8 @@ public class DocumentCtrl {
 
     @Post(value = "/document/{id}", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
     HttpResponse<DocumentDto> update( @NotNull @PathVariable UUID id, @NotNull @Body DocumentDto documentDto) {
-        Document udocument = documentMapper.toEntity(documentDto);
         return SecurityHelper.currentSchema()
-                .map(schema -> documentUpdateUsecase.execute(schema, id, udocument))
+                .map(schema -> documentUpdateUsecase.execute(schema, id, documentMapper.toEntity(schema, documentDto)))
                 .map(document -> documentMapper.toDto(document))
                 .map(dto -> HttpResponse.ok().body(dto))
                 .orElseThrow(() -> new NotAuthorizedException("Not authorized"));

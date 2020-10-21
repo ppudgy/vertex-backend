@@ -60,9 +60,8 @@ public class TodoCtrl {
 
     @Put(value = "/todo", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
     HttpResponse<TodoDto> create(@NotNull @Body TodoNewDto todoDto) {
-        Todo newTodo = todoMapper.toEntity(todoDto);
         return SecurityHelper.currentSchema()
-                .map(schema -> todoCreateUsecase.execute(schema, newTodo))
+                .map(schema -> todoCreateUsecase.execute(schema, todoMapper.toEntity(schema, todoDto)))
                 .map(todo -> todoMapper.toDto(todo))
                 .map(dto -> HttpResponse.created(dto))
                 .orElseThrow(() -> new NotAuthorizedException("Not authorized"));
@@ -70,9 +69,8 @@ public class TodoCtrl {
 
     @Post(value = "/todo/{id}", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
     HttpResponse<TodoDto> update( @NotNull @PathVariable UUID id, @NotNull @Body TodoDto todoDto) {
-        Todo utodo = todoMapper.toEntity(todoDto);
         return SecurityHelper.currentSchema()
-                .map(schema -> todoUpdateUsecase.execute(schema, id, utodo))
+                .map(schema -> todoUpdateUsecase.execute(schema, id, todoMapper.toEntity(schema,todoDto)))
                 .map(todo -> todoMapper.toDto(todo))
                 .map(dto -> HttpResponse.ok().body(dto))
                 .orElseThrow(() -> new NotAuthorizedException("Not authorized"));

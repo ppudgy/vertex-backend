@@ -59,9 +59,8 @@ public class TopicCtrl {
 
     @Put(value = "/topic", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
     HttpResponse<TopicDto> create(@NotNull @Body TopicNewDto topicDto) {
-        Topic newTopic = topicMapper.toEntity(topicDto);
         return SecurityHelper.currentSchema()
-                .map(schema -> topicCreateUsecase.execute(schema, newTopic))
+                .map(schema -> topicCreateUsecase.execute(schema, topicMapper.toEntity(schema, topicDto)))
                 .map(topic -> topicMapper.toDto(topic))
                 .map(dto -> HttpResponse.created(dto))
                 .orElseThrow(() -> new NotAuthorizedException("Not authorized"));
@@ -69,9 +68,8 @@ public class TopicCtrl {
 
     @Post(value = "/topic/{id}", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
     HttpResponse<TopicDto> update( @NotNull @PathVariable UUID id, @NotNull @Body TopicDto topicDto) {
-        Topic newTopic = topicMapper.toEntity(topicDto);
         return SecurityHelper.currentSchema()
-                .map(schema -> topicUpdateUsecase.execute(schema, newTopic))
+                .map(schema -> topicUpdateUsecase.execute(schema, topicMapper.toEntity(schema, topicDto)))
                 .map(topic -> topicMapper.toDto(topic))
                 .map(dto -> HttpResponse.ok().body(dto))
                 .orElseThrow(() -> new NotAuthorizedException("Not authorized"));

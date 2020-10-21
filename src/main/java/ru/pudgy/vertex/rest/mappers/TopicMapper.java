@@ -1,48 +1,28 @@
 package ru.pudgy.vertex.rest.mappers;
 
-import org.mapstruct.AfterMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 import ru.pudgy.vertex.cfg.AppMapperConfig;
+import ru.pudgy.vertex.model.entity.Schemata;
 import ru.pudgy.vertex.model.entity.Topic;
 import ru.pudgy.vertex.rest.dto.TopicDto;
 import ru.pudgy.vertex.rest.dto.TopicNewDto;
 
 @Mapper(config = AppMapperConfig.class)
 public interface TopicMapper {
-
-    @AfterMapping
-    default void toEntityAfterMapping(TopicDto dto, @MappingTarget Topic topic) {
-        if(dto.getChecked() == null)
-            topic.setChecked(false);
-    }
-
     @Mapping(target ="id", source = "dto.id")
-    @Mapping(target ="schemata", ignore = true)
+    @Mapping(target ="schemata", source = "schema.id")
     @Mapping(target ="name", source = "dto.name")
-    Topic toEntity(TopicDto dto);
+    @Mapping(target ="checked", source = "dto.checked", defaultValue = "false")
+    Topic toEntity(Schemata schema,TopicDto dto);
 
-    @AfterMapping
-    default void toEntityAfterMapping(TopicNewDto dto, @MappingTarget Topic topic) {
-        if(dto.getChecked() == null)
-            topic.setChecked(false);
-    }
-
-    @Mapping(target ="id", ignore = true)
-    @Mapping(target ="schemata", ignore = true)
+    @Mapping(target ="id", expression = "java(java.util.UUID.randomUUID())")
+    @Mapping(target ="schemata", source = "schema.id")
     @Mapping(target ="name", source = "dto.name")
-    @Mapping(target ="checked", source = "dto.checked")
-    Topic toEntity(TopicNewDto dto);
-
-    @AfterMapping
-    default void toDtoAfterMapping(Topic topic, @MappingTarget TopicDto dto) {
-        if(topic.getChecked() == null)
-            dto.setChecked(false);
-    }
+    @Mapping(target ="checked", source = "dto.checked", defaultValue = "false")
+    Topic toEntity(Schemata schema, TopicNewDto dto);
 
     @Mapping(target ="id", source = "topic.id")
     @Mapping(target ="name", source = "topic.name")
-    @Mapping(target ="checked", source = "topic.checked")
+    @Mapping(target ="checked", source = "topic.checked", defaultValue = "false")
     TopicDto toDto(Topic topic);
 }

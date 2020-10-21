@@ -61,9 +61,8 @@ public class NoteCtrl {
 
     @Put(value = "/note", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
     HttpResponse<NoteDto> create(@NotNull @Body NoteNewDto noteDto) {
-        Note newNote = noteMapper.toEntity(noteDto);
         return SecurityHelper.currentSchema()
-                .map(schema -> noteCreateUsecase.execute(schema, newNote))
+                .map(schema -> noteCreateUsecase.execute(schema, noteMapper.toEntity(schema, noteDto)))
                 .map(note -> noteMapper.toDto(note))
                 .map(dto -> HttpResponse.created(dto))
                 .orElseThrow(() -> new NotAuthorizedException("Not authorized"));
@@ -71,9 +70,8 @@ public class NoteCtrl {
 
     @Post(value = "/note/{id}", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
     HttpResponse<NoteDto> update( @NotNull @PathVariable UUID id, @NotNull @Body NoteDto noteDto) {
-        Note unote = noteMapper.toEntity(noteDto);
         return SecurityHelper.currentSchema()
-                .map(schema -> noteUpdateUsecase.execute(schema, id, unote))
+                .map(schema -> noteUpdateUsecase.execute(schema, id, noteMapper.toEntity(schema, noteDto)))
                 .map(note -> noteMapper.toDto(note))
                 .map(dto -> HttpResponse.ok().body(dto))
                 .orElseThrow(() -> new NotAuthorizedException("Not authorized"));

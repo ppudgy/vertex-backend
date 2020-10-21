@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import ru.pudgy.vertex.exceptions.NotAuthorizedException;
 import ru.pudgy.vertex.model.entity.Topic;
 import ru.pudgy.vertex.rest.dto.TopicDto;
+import ru.pudgy.vertex.rest.dto.TopicNewDto;
 import ru.pudgy.vertex.rest.mappers.TopicMapper;
 import ru.pudgy.vertex.rest.security.SecurityHelper;
 import ru.pudgy.vertex.usecase.fragment.topic.*;
@@ -55,9 +56,8 @@ public class FragmentTopicCtrl {
 
     @Put(value = "/document/{doc}/fragment/{fragment}/topic", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
     HttpResponse<TopicDto> create(@NotNull UUID doc, @NotNull UUID fragment, @NotNull @Body TopicDto topicDto) {
-        Topic newtopic = topicMapper.toEntity(topicDto);
         return SecurityHelper.currentSchema()
-                .map(schema -> fragmentTopicCreateUsecase.execute(schema, doc, fragment, newtopic))
+                .map(schema -> fragmentTopicCreateUsecase.execute(schema, doc, fragment, topicMapper.toEntity(schema, topicDto)))
                 .map(top -> topicMapper.toDto(top))
                 .map(dto -> HttpResponse.created(dto))
                 .orElseThrow(() -> new NotAuthorizedException("Not authorized"));
@@ -65,9 +65,8 @@ public class FragmentTopicCtrl {
 
     @Post(value = "/document/{doc}/fragment/{fragment}/topic/{topic}", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
     HttpResponse<TopicDto> update(@NotNull UUID doc,  @NotNull UUID fragment, @NotNull UUID topic, @NotNull @Body TopicDto topicDto) {
-        Topic utopic = topicMapper.toEntity(topicDto);
         return SecurityHelper.currentSchema()
-                .map(schema -> fragmentTopicUpdateUsecase.execute(schema, doc, fragment, topic, utopic))
+                .map(schema -> fragmentTopicUpdateUsecase.execute(schema, doc, fragment, topic, topicMapper.toEntity(schema, topicDto)))
                 .map(top -> topicMapper.toDto(top))
                 .map(dto -> HttpResponse.ok().body(dto))
                 .orElseThrow(() -> new NotAuthorizedException("Not authorized"));

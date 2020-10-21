@@ -6,6 +6,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import ru.pudgy.vertex.cfg.AppMapperConfig;
 import ru.pudgy.vertex.model.entity.Purpose;
+import ru.pudgy.vertex.model.entity.Schemata;
 import ru.pudgy.vertex.model.entity.Todo;
 import ru.pudgy.vertex.rest.dto.TodoDto;
 import ru.pudgy.vertex.rest.dto.TodoNewDto;
@@ -31,22 +32,15 @@ public abstract class TodoMapper {
     @Mapping(target = "purposeColor", ignore = true)
     public abstract TodoDto toDto(Todo note);
 
-    @AfterMapping
-    public void toEntityAfterMapping(TodoNewDto dto, @MappingTarget Todo entity) {
-        entity.setId(UUID.randomUUID());
-        entity.setSchemata(null);
-        entity.setOrigin(ZonedDateTime.now());
-        entity.setDone(false);
-        entity.setEndtime(null);
-    }
+    @Mapping(target = "id", expression = "java(java.util.UUID.randomUUID())")
+    @Mapping(target = "schemata", source = "schema.id")
+    @Mapping(target = "origin", expression = "java(java.time.ZonedDateTime.now())")
+    @Mapping(target = "done", constant = "false")
+    @Mapping(target = "endtime", expression = "java(null)")
+    public abstract Todo toEntity(Schemata schema, TodoNewDto dto);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "schemata", ignore = true)
-    @Mapping(target = "origin", ignore = true)
-    @Mapping(target = "done", ignore = true)
-    @Mapping(target = "endtime", ignore = true)
-    public abstract Todo toEntity(TodoNewDto dto);
-
-    @Mapping(target = "schemata", ignore = true)
-    public abstract Todo toEntity(TodoDto dto);
+    @Mapping(target = "id", source = "dto.id")
+    @Mapping(target = "schemata", source = "schema.id")
+    @Mapping(target = "origin", source = "dto.origin")
+    public abstract Todo toEntity(Schemata schema, TodoDto dto);
 }

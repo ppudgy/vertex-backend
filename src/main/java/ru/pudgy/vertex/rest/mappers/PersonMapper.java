@@ -6,6 +6,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import ru.pudgy.vertex.cfg.AppMapperConfig;
 import ru.pudgy.vertex.model.entity.Person;
+import ru.pudgy.vertex.model.entity.Schemata;
 import ru.pudgy.vertex.rest.dto.PersonDto;
 import ru.pudgy.vertex.rest.dto.PersonNewDto;
 
@@ -15,39 +16,21 @@ import java.util.UUID;
 @Mapper(config = AppMapperConfig.class)
 public interface PersonMapper {
 
-    @AfterMapping
-    default void toEntityAfterMapping(PersonDto dto, @MappingTarget Person person) {
-        if(dto.getChecked() == null)
-            person.setChecked(false);
-        person.setSex(
-            "women".equalsIgnoreCase(dto.getSex())
-                ? "women"
-                : "men"
-        );
-    }
+    @Mapping(target ="id", source = "dto.id")
+    @Mapping(target ="schemata", source = "schema.id")
+    @Mapping(target ="checked", defaultValue = "false")
+    @Mapping(target ="origin", source = "dto.origin")
+    @Mapping(target ="name", source = "dto.name")
+    @Mapping(target ="sex", expression = "java(\"women\".equalsIgnoreCase(dto.getSex())? \"women\": \"men\")")
+    Person toEntity(Schemata schema, PersonDto dto);
 
-    @Mapping(target ="schemata", ignore = true)
-    Person toEntity(PersonDto dto);
+    @Mapping(target ="id", expression = "java(java.util.UUID.randomUUID())")
+    @Mapping(target ="schemata", source = "schema.id")
+    @Mapping(target ="origin", expression = "java(java.time.ZonedDateTime.now())")
+    @Mapping(target ="name", source = "dto.name")
+    @Mapping(target ="checked",  constant = "false")
+    Person toEntity(Schemata schema, PersonNewDto dto);
 
-    @AfterMapping
-    default void toEntityAfterMapping(PersonNewDto dto, @MappingTarget Person person) {
-        person.setId(UUID.randomUUID());
-        person.setOrigin(ZonedDateTime.now());
-        person.setChecked(false);
-    }
-
-    @Mapping(target ="id", ignore = true)
-    @Mapping(target ="schemata", ignore = true)
-    @Mapping(target ="origin",  ignore = true)
-    @Mapping(target ="checked",  ignore = true)
-    Person toEntity(PersonNewDto dto);
-
-
-    @AfterMapping
-    default void toDtoAfterMapping(Person person, @MappingTarget PersonDto dto) {
-        if(person.getChecked() == null)
-            dto.setChecked(false);
-    }
-
+    @Mapping(target ="checked",  defaultValue = "false")
     PersonDto toDto(Person person);
 }

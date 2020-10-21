@@ -280,6 +280,7 @@ public class FragmentTopicTest extends AbstractBaseTest {
     void test09() {
         assertThat(TOKEN).isNotBlank();
         assertThat(DOCUMENT).isNotNull();
+        assertThat(FRAGMENT).isNotNull();
 
 
         List<TopicDto> topics = client.toBlocking()

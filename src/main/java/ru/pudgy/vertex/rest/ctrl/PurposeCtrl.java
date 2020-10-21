@@ -53,9 +53,9 @@ public class PurposeCtrl {
 
     @Put(value = "/purpose", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
     HttpResponse<PurposeDto> create(@NotNull @Body PurposeNewDto purposeDto) {
-        Purpose newPurpose = purposeMapper.toEntity(purposeDto);
+//        Purpose newPurpose = purposeMapper.toEntity(purposeDto);
         return SecurityHelper.currentSchema()
-                .map(schema -> purposeCreateUsecase.execute(schema, newPurpose))
+                .map(schema -> purposeCreateUsecase.execute(schema, purposeMapper.toEntity(schema, purposeDto)))
                 .map(purpose -> purposeMapper.toDto(purpose))
                 .map(dto -> HttpResponse.created(dto))
                 .orElseThrow(() -> new NotAuthorizedException("Not authorized"));
@@ -63,9 +63,8 @@ public class PurposeCtrl {
 
     @Post(value = "/purpose/{id}", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
     HttpResponse<PurposeDto> update( @NotNull @PathVariable UUID id, @NotNull @Body PurposeDto purposeDto) {
-        Purpose newPurpose = purposeMapper.toEntity(purposeDto);
         return SecurityHelper.currentSchema()
-                .map(schema -> purposeUpdateUsecase.execute(schema, id, newPurpose))
+                .map(schema -> purposeUpdateUsecase.execute(schema, id, purposeMapper.toEntity(schema, purposeDto)))
                 .map(purpose -> purposeMapper.toDto(purpose))
                 .map(dto -> HttpResponse.ok().body(dto))
                 .orElseThrow(() -> new NotAuthorizedException("Not authorized"));

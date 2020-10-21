@@ -6,6 +6,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import ru.pudgy.vertex.cfg.AppMapperConfig;
 import ru.pudgy.vertex.model.entity.Contact;
+import ru.pudgy.vertex.model.entity.Schemata;
 import ru.pudgy.vertex.model.entity.TypeOfContact;
 import ru.pudgy.vertex.rest.dto.ContactDto;
 import ru.pudgy.vertex.rest.dto.ContactNewDto;
@@ -30,20 +31,16 @@ public abstract class ContactMapper {
     @Mapping(target = "typename", ignore = true)
     public abstract ContactDto toDto(Contact contact);
 
-    @AfterMapping
-    public void toEntityAfterMapping(UUID person, ContactNewDto dto, @MappingTarget Contact entity) {
-        entity.setOrigin(ZonedDateTime.now());
-    }
-
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "schemata", ignore = true)
-    @Mapping(target = "origin", ignore = true)
+    @Mapping(target = "id", expression = "java(java.util.UUID.randomUUID())")
+    @Mapping(target = "schemata", source = "schema.id")
+    @Mapping(target = "origin", expression = "java(java.time.ZonedDateTime.now())")
     @Mapping(target = "person", source = "person")
-    public abstract Contact toEntity(UUID person, ContactNewDto dto);
+    public abstract Contact toEntity(Schemata schema, UUID person, ContactNewDto dto);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "schemata", ignore = true)
-    @Mapping(target = "person", ignore = true)
-    @Mapping(target = "typeofcontact",source = "type")
-    public abstract Contact toEntity(ContactDto dto);
+    @Mapping(target = "id", source = "dto.id")
+    @Mapping(target = "schemata", source = "schema.id")
+    @Mapping(target = "origin", source = "dto.origin")
+    @Mapping(target = "person", source = "person")
+    @Mapping(target = "typeofcontact",source = "dto.type")
+    public abstract Contact toEntity(Schemata schema, UUID person, ContactDto dto);
 }

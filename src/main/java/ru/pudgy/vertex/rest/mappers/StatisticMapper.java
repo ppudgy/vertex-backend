@@ -11,14 +11,8 @@ import ru.pudgy.vertex.rest.dto.StatisticDto;
 @Mapper(config = AppMapperConfig.class)
 public interface StatisticMapper {
 
-    @AfterMapping
-    default void toDtoAfterMapping(Statistic statistic, @MappingTarget StatisticDto dto) {
-        if(statistic.getValue() == null)
-            dto.setValue(0);
-    }
-
     @Mapping(target ="name", source = "statistic.name")
     @Mapping(target ="color", source = "statistic.color")
-    @Mapping(target ="value", source = "statistic.value")
+    @Mapping(target ="value", source = "statistic.value", defaultValue = "0")
     StatisticDto toDto(Statistic statistic);
 }

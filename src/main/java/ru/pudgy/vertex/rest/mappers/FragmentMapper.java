@@ -7,6 +7,7 @@ import org.mapstruct.MappingTarget;
 import ru.pudgy.vertex.cfg.AppMapperConfig;
 import ru.pudgy.vertex.model.entity.Document;
 import ru.pudgy.vertex.model.entity.Fragment;
+import ru.pudgy.vertex.model.entity.Schemata;
 import ru.pudgy.vertex.rest.dto.FragmentDto;
 import ru.pudgy.vertex.rest.dto.FragmentNewDto;
 import ru.pudgy.vertex.srvc.TextService;
@@ -29,31 +30,28 @@ public abstract class FragmentMapper {
         dto.setAnnotation(textUtil.createAnnotation(fragment.getText()));
         Document document = documentByIdUsecase.execute(fragment.getSchemata(), fragment.getDocument());
         dto.setDocname(document.getName());
-        dto.setRoll(false);
     }
 
     @Mapping(target = "annotation", ignore = true)
     @Mapping(target = "start", source="fragment.posstart")
     @Mapping(target = "end", source="fragment.posend")
-    @Mapping(target = "roll", ignore = true)
+    @Mapping(target = "roll", constant = "false")
     @Mapping(target = "docname", ignore = true)
     public abstract  FragmentDto toDto(Fragment fragment);
 
-     @AfterMapping
-    public void toEntityAfterMapping(FragmentNewDto dto, @MappingTarget Fragment entity) {
-        entity.setId(UUID.randomUUID());
-        entity.setOrigin(ZonedDateTime.now());
-    }
-
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "origin", ignore = true)
-    @Mapping(target = "schemata", ignore = true)
+    @Mapping(target = "id", expression = "java(java.util.UUID.randomUUID())")
+    @Mapping(target = "origin", expression = "java(java.time.ZonedDateTime.now())")
+    @Mapping(target = "schemata", source = "schema.id")
     @Mapping(target = "posstart", source = "dto.start")
     @Mapping(target = "posend", source = "dto.end")
-    public abstract Fragment toEntity(FragmentNewDto dto);
+    @Mapping(target = "name", source = "dto.name")
+    public abstract Fragment toEntity(Schemata schema, FragmentNewDto dto);
 
-    @Mapping(target = "schemata", ignore = true)
+    @Mapping(target = "id", source = "dto.id")
+    @Mapping(target = "schemata", source = "schema.id")
+    @Mapping(target = "origin", source = "dto.origin")
     @Mapping(target = "posstart", source = "dto.start")
     @Mapping(target = "posend", source = "dto.end")
-    public abstract Fragment toEntity(FragmentDto dto);
+    @Mapping(target = "name", source = "dto.name")
+    public abstract Fragment toEntity(Schemata schema, FragmentDto dto);
 }

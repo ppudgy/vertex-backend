@@ -64,9 +64,8 @@ public class PersonCtrl {
 
     @Put(value = "/person", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
     HttpResponse<PersonDto> create(@NotNull @Body PersonNewDto personDto) {
-        Person newPerson = personMapper.toEntity(personDto);
         return SecurityHelper.currentSchema()
-                .map(schema -> personCreateUsecase.execute(schema, newPerson))
+                .map(schema -> personCreateUsecase.execute(schema, personMapper.toEntity(schema, personDto)))
                 .map(person -> personMapper.toDto(person))
                 .map(dto -> HttpResponse.created(dto))
                 .orElseThrow(() -> new NotAuthorizedException("Not authorized"));
@@ -74,9 +73,8 @@ public class PersonCtrl {
 
     @Post(value = "/person/{id}", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
     HttpResponse<PersonDto> update( @NotNull @PathVariable UUID id, @NotNull @Body PersonDto personDto) {
-        Person uperson = personMapper.toEntity(personDto);
         return SecurityHelper.currentSchema()
-                .map(schema -> personUpdateUsecase.execute(schema, id, uperson))
+                .map(schema -> personUpdateUsecase.execute(schema, id, personMapper.toEntity(schema, personDto)))
                 .map(person -> personMapper.toDto(person))
                 .map(dto -> HttpResponse.ok().body(dto))
                 .orElseThrow(() -> new NotAuthorizedException("Not authorized"));
