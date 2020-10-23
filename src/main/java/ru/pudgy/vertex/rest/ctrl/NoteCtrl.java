@@ -8,7 +8,6 @@ import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
 import lombok.RequiredArgsConstructor;
 import ru.pudgy.vertex.exceptions.NotAuthorizedException;
-import ru.pudgy.vertex.model.entity.Note;
 import ru.pudgy.vertex.rest.dto.*;
 import ru.pudgy.vertex.rest.mappers.NoteMapper;
 import ru.pudgy.vertex.rest.mappers.StatisticMapper;
@@ -45,17 +44,17 @@ public class NoteCtrl {
         return SecurityHelper.currentSchema()
                 .map(schema -> listNoteUsecase.execute(schema, page, size, purpose, searchString))
                 .map(_page -> _page
-                        .map(note -> noteMapper.toDto(note))
+                        .map(noteMapper::toDto)
                 )
-                .map(_page -> HttpResponse.ok(_page))
+                .map(HttpResponse::ok)
                 .orElseThrow(() -> new NotAuthorizedException(""));
     }
     @Get(value = "/note/{id}", produces = MediaType.APPLICATION_JSON)
     HttpResponse<NoteDto> topic(@PathVariable @NotNull UUID id) {
         return SecurityHelper.currentSchema()
                 .map(schema -> noteByIdUsecase.execute(schema, id))
-                .map(note -> noteMapper.toDto(note))
-                .map(dto -> HttpResponse.ok(dto))
+                .map(noteMapper::toDto)
+                .map(HttpResponse::ok)
                 .orElseThrow(() -> new NotAuthorizedException("Not authorized"));
     }
 
@@ -63,8 +62,8 @@ public class NoteCtrl {
     HttpResponse<NoteDto> create(@NotNull @Body NoteNewDto noteDto) {
         return SecurityHelper.currentSchema()
                 .map(schema -> noteCreateUsecase.execute(schema, noteMapper.toEntity(schema, noteDto)))
-                .map(note -> noteMapper.toDto(note))
-                .map(dto -> HttpResponse.created(dto))
+                .map(noteMapper::toDto)
+                .map(HttpResponse::created)
                 .orElseThrow(() -> new NotAuthorizedException("Not authorized"));
     }
 
@@ -72,7 +71,7 @@ public class NoteCtrl {
     HttpResponse<NoteDto> update( @NotNull @PathVariable UUID id, @NotNull @Body NoteDto noteDto) {
         return SecurityHelper.currentSchema()
                 .map(schema -> noteUpdateUsecase.execute(schema, id, noteMapper.toEntity(schema, noteDto)))
-                .map(note -> noteMapper.toDto(note))
+                .map(noteMapper::toDto)
                 .map(dto -> HttpResponse.ok().body(dto))
                 .orElseThrow(() -> new NotAuthorizedException("Not authorized"));
     }
@@ -88,12 +87,13 @@ public class NoteCtrl {
     @Get(value = "/note/purpose/statistic", produces = MediaType.APPLICATION_JSON)
     HttpResponse<List<StatisticDto>> statistic() {
         return SecurityHelper.currentSchema()
-                .map(schema -> noteStatisticUsecase.execute(schema))
+                .map(noteStatisticUsecase::execute)
                 .map(statistics ->  statistics.stream()
-                                                .map(statistic -> statisticMapper.toDto(statistic))
+                                                .map(statisticMapper::toDto)
                                                 .collect(Collectors.toList())
                 )
-                .map(dto -> HttpResponse.ok(dto))
+                .map(HttpResponse::ok)
                 .orElseThrow(() -> new NotAuthorizedException("Not authorized"));
     }
+
 }
