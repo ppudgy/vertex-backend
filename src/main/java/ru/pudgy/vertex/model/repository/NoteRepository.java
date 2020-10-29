@@ -12,8 +12,8 @@ import java.util.UUID;
 @Repository
 public interface NoteRepository extends PageableRepository<Note, UUID> {
     Page<Note> findBySchemataAndPurpose(UUID schemata, UUID purpose, Pageable pageable);
-    Page<Note> findBySchemataAndTextLike(UUID schemata, String searchString, Pageable pageable);
-    Page<Note> findBySchemataAndPurposeAndTextLike(UUID schemata, UUID purpose, String searchString, Pageable pageable);
+    Page<Note> findBySchemataAndTextIlike(UUID schemata, String searchString, Pageable pageable);
+    Page<Note> findBySchemataAndPurposeAndTextIlike(UUID schemata, UUID purpose, String searchString, Pageable pageable);
     Page<Note> findBySchemata(UUID schemata, Pageable pageable);
     Optional<Note> findBySchemataAndId(UUID schemata, UUID id);
 

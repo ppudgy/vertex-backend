@@ -32,11 +32,11 @@ public class ListDocumentUsecase {
         );
         searchString = textService.formatSearchString(searchString);
         if(purpose != null && searchString != null) {
-            result = documentRepository.findBySchemataAndPurposeAndTextLike(schemata.getId(), purpose, searchString, pageable);
+            result = documentRepository.findBySchemataAndPurposeAndTextIlike(schemata.getId(), purpose, searchString, pageable);
         } else if(purpose != null) {
             result = documentRepository.findBySchemataAndPurpose(schemata.getId(), purpose, pageable);
         } else if(searchString != null) {
-            result = documentRepository.findBySchemataAndTextLike(schemata.getId(), searchString, pageable);
+            result = documentRepository.findBySchemataAndTextIlike(schemata.getId(), searchString, pageable);
         } else {
             result = documentRepository.findBySchemata(schemata.getId(), pageable);
         }

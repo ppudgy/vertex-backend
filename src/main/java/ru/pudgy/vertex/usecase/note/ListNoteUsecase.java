@@ -33,11 +33,11 @@ public class ListNoteUsecase {
         );
         searchString = textService.formatSearchString(searchString);
         if(purpose != null && searchString != null) {
-            result = noteRepository.findBySchemataAndPurposeAndTextLike(schemata.getId(), purpose, searchString, pageable);
+            result = noteRepository.findBySchemataAndPurposeAndTextIlike(schemata.getId(), purpose, searchString, pageable);
         } else if(purpose != null) {
             result = noteRepository.findBySchemataAndPurpose(schemata.getId(), purpose, pageable);
         } else if(searchString != null) {
-            result = noteRepository.findBySchemataAndTextLike(schemata.getId(), searchString, pageable);
+            result = noteRepository.findBySchemataAndTextIlike(schemata.getId(), searchString, pageable);
         } else {
             result = noteRepository.findBySchemata(schemata.getId(), pageable);
         }

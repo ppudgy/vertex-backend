@@ -30,6 +30,8 @@
     <mapstruct.version>1.4.0.CR1</mapstruct.version>
     <swagger.version>2.1.1</swagger.version>
     <assertj.version>3.11.1</assertj.version>
+
+    <glagol.version>1.0</glagol.version>
   </properties>
 
   <repositories>
@@ -54,7 +56,11 @@
 
 
   <dependencies>
-
+    <dependency>
+      <groupId>ru.pudgy.glagol</groupId>
+      <artifactId>glagol-text</artifactId>
+      <version>${glagol.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
@@ -113,9 +119,6 @@
       <artifactId>micronaut-flyway</artifactId>
       <scope>compile</scope>
     </dependency>
-
-
-
     <dependency>
       <groupId>org.mapstruct</groupId>
       <artifactId>mapstruct</artifactId>
@@ -186,6 +189,33 @@
   </dependencies>
 
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <release>15</release>
+            <compilerArgs>
+              --enable-preview
+            </compilerArgs>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <argLine>--enable-preview</argLine>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <configuration>
+            <argLine>--enable-preview</argLine>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+
     <plugins>
       <plugin>
         <groupId>io.micronaut.build</groupId>

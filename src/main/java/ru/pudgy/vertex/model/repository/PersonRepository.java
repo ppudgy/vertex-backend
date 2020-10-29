@@ -17,7 +17,7 @@ public interface PersonRepository extends CrudRepository<Person, UUID> {
     Number deleteBySchemataAndId(UUID schemata, UUID id);
     @Query(value = "from Person p where p.schemata=:schema and upper( COALESCE(p.family, ' ' ) || ' '  || COALESCE(p.name, ' ')  ||' ' ||  COALESCE(p.sername, ' ')) like upper(:name) order by p.family",
             countQuery = "from Person p where p.schemata=:schema and upper( COALESCE(p.family, ' ' ) || ' '  || COALESCE(p.name, ' ')  ||' ' ||  COALESCE(p.sername, ' ')) like upper(:name) order by p.family")
-    Page<Person> findBySchemataAndTextLike(UUID schema, String name, Pageable pageable);
+    Page<Person> findBySchemataAndTextIlike(UUID schema, String name, Pageable pageable);
     Page<Person> findBySchemata(UUID schemata, Pageable pageable);
     @Query(value = "from Person p where p.schemata=:schema and id in :persons " +
             "order by upper( COALESCE(p.family, ' ' ) || ' '  || COALESCE(p.name, ' ')  ||' ' ||  COALESCE(p.sername, ' '))")
@@ -29,9 +29,9 @@ public interface PersonRepository extends CrudRepository<Person, UUID> {
             " where " +
             " p.schemata = :schema " +
             " and (" +
-            "       upper( COALESCE(p.family, ' ' ) || ' '  || COALESCE(p.name, ' ')  ||' ' ||  COALESCE(p.sername, ' ')) like :searchString " +
+            "       upper( COALESCE(p.family, ' ' ) || ' '  || COALESCE(p.name, ' ')  ||' ' ||  COALESCE(p.sername, ' ')) like upper(:searchString) " +
             "       or (select true from fragmentperson fp  where fp.fragment = :fragment and fp.person = p.id) " +
             "     )" +
             "order by checked, upper( COALESCE(p.family, ' ' ) || ' '  || COALESCE(p.name, ' ')  ||' ' ||  COALESCE(p.sername, ' '))", nativeQuery = true)
-    List<Person> findBySchemataAndFragmentAndNameLike(UUID schema, UUID fragment, String searchString);
+    List<Person> findBySchemataAndFragmentAndNameIlike(UUID schema, UUID fragment, String searchString);
 }

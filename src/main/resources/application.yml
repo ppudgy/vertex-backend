@@ -39,5 +39,6 @@ flyway:
       locations: classpath:db/migration
 
 
-
+text:
+  annotationBuilder: Glagol
 

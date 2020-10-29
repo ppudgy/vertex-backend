@@ -22,6 +22,6 @@ public class ListFragmentForTopicUseCase {
 
         return StringUtils.isEmpty(searchString)
                 ? fragmentRepository.findBySchemataAndTopic(schema.getId(), topic)
-                : fragmentRepository.findBySchemataAndTopicAndTextLike(schema.getId(), topic, searchString);
+                : fragmentRepository.findBySchemataAndTopicAndTextIlike(schema.getId(), topic, searchString);
     }
 }

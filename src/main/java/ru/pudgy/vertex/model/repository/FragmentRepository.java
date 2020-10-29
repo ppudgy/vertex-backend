@@ -25,9 +25,9 @@ public interface FragmentRepository  extends CrudRepository<Fragment, UUID> {
             " where " +
             "    fragmenttopic.topic = :topic " +
             "    and fragment.schemata = :schema " +
-            "    and upper(fragment.text) like :searchString" +
+            "    and upper(fragment.text) like upper(:searchString)" +
             "   order by fragment.origin desc", nativeQuery = true)
-    List<Fragment> findBySchemataAndTopicAndTextLike(UUID schema, UUID topic, String searchString);
+    List<Fragment> findBySchemataAndTopicAndTextIlike(UUID schema, UUID topic, String searchString);
 
     @Query(value = "select fragment.* from fragment join fragmentperson  on fragment.id = fragmentperson.fragment" +
             " where " +
@@ -40,7 +40,7 @@ public interface FragmentRepository  extends CrudRepository<Fragment, UUID> {
             " where " +
             "     fragmentperson.person = :person" +
             "    and fragment.schemata = :schema " +
-            "    and upper(fragment.text) like :searchString" +
+            "    and upper(fragment.text) like upper(:searchString)" +
             "   order by fragment.origin desc", nativeQuery = true)
-    List<Fragment> findBySchemataAndPersonAndTextLike(UUID schema, UUID person, String searchString);
+    List<Fragment> findBySchemataAndPersonAndTextIlike(UUID schema, UUID person, String searchString);
 }

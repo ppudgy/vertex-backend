@@ -22,6 +22,6 @@ public class ListFragmentForPersonUseCase {
 
         return StringUtils.isEmpty(searchString)
                 ? fragmentRepository.findBySchemataAndPerson(schema.getId(), person)
-                : fragmentRepository.findBySchemataAndPersonAndTextLike(schema.getId(), person, searchString);
+                : fragmentRepository.findBySchemataAndPersonAndTextIlike(schema.getId(), person, searchString);
     }
 }

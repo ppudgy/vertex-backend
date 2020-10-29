@@ -30,11 +30,11 @@ public class ListTodoUsecase {
         );
         searchString = textService.formatSearchString(searchString);
         if(purpose != null && searchString != null) {
-            result = todoRepository.findBySchemataAndPurposeAndDescriptionLike(schemata.getId(), purpose, searchString, pageable);
+            result = todoRepository.findBySchemataAndPurposeAndDescriptionIlike(schemata.getId(), purpose, searchString, pageable);
         } else if(purpose != null) {
             result = todoRepository.findBySchemataAndPurpose(schemata.getId(), purpose, pageable);
         } else if(searchString != null) {
-            result = todoRepository.findBySchemataAndDescriptionLike(schemata.getId(), searchString, pageable);
+            result = todoRepository.findBySchemataAndDescriptionIlike(schemata.getId(), searchString, pageable);
         } else {
             result = todoRepository.findBySchemata(schemata.getId(), pageable);
         }

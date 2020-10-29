@@ -28,7 +28,7 @@ public class ListPersonUsecase {
         );
         searchString = textService.formatSearchString(searchString);
         if(searchString != null) {
-            result = personRepository.findBySchemataAndTextLike(schema.getId(), searchString, pageable);
+            result = personRepository.findBySchemataAndTextIlike(schema.getId(), searchString, pageable);
         } else {
             result = personRepository.findBySchemata(schema.getId(), pageable);
         }

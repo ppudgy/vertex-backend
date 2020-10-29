@@ -23,9 +23,9 @@ public interface TopicRepository extends CrudRepository<Topic, UUID> {
             " where " +
             "   t.schemata = :schema" +
             "   and (" +
-            "       upper(name) like :name " +
+            "       upper(name) like upper(:name) " +
             "       or (select true from fragmenttopic ft  join fragment f on ft.fragment = f.id where f.id = :fragment and ft.topic = t.id) " +
             "   )" +
             " order by checked desc, name", nativeQuery = true)
-    List<Topic> findByFragmentAndNameLike(UUID schema, UUID fragment, String name);
+    List<Topic> findByFragmentAndNameIlike(UUID schema, UUID fragment, String name);
 }

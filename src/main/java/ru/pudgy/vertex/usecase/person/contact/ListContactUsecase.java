@@ -22,11 +22,11 @@ public class ListContactUsecase {
         searchString = textService.formatSearchString(searchString);
 
         if (type != null && searchString != null) {
-            result = contactRepository.findBySchemataAndPersonAndTypeofcontactAndContactLike(schema.getId(), person, type, searchString);
+            result = contactRepository.findBySchemataAndPersonAndTypeofcontactAndContactIlike(schema.getId(), person, type, searchString);
         } else if (type != null) {
             result = contactRepository.findBySchemataAndPersonAndTypeofcontact(schema.getId(), person, type);
         } else if (searchString != null) {
-            result = contactRepository.findBySchemataAndPersonAndContactLike(schema.getId(), person, searchString);
+            result = contactRepository.findBySchemataAndPersonAndContactIlike(schema.getId(), person, searchString);
         } else {
             result = contactRepository.findBySchemataAndPerson(schema.getId(), person);
         }

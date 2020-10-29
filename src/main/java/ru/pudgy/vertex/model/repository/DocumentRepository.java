@@ -11,9 +11,9 @@ import java.util.UUID;
 
 @Repository
 public interface DocumentRepository  extends CrudRepository<Document, UUID> {
-    Page<Document> findBySchemataAndPurposeAndTextLike(UUID schema, UUID purpose, String searchString, Pageable pageable);
+    Page<Document> findBySchemataAndPurposeAndTextIlike(UUID schema, UUID purpose, String searchString, Pageable pageable);
     Page<Document> findBySchemataAndPurpose(UUID schema, UUID purpose, Pageable pageable);
-    Page<Document> findBySchemataAndTextLike(UUID schema, String searchString, Pageable pageable);
+    Page<Document> findBySchemataAndTextIlike(UUID schema, String searchString, Pageable pageable);
     Page<Document> findBySchemata(UUID schema, Pageable pageable);
     Optional<Document> findBySchemataAndId(UUID schema, UUID id);
     Number deleteBySchemataAndId(UUID schema, UUID id);
