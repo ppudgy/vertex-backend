@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Data
 @RequiredArgsConstructor(staticName = "of")
+@Deprecated
 public class Pair<K, V> {
     private final K key;
     private final V value;

@@ -1,37 +1,52 @@
 package ru.pudgy.vertex.rest.ctrl.test;
 
+import io.micronaut.context.ApplicationContext;
 import io.micronaut.core.type.Argument;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.client.HttpClient;
-import io.micronaut.http.client.annotation.Client;
 import io.micronaut.runtime.server.EmbeddedServer;
 import io.micronaut.security.token.jwt.render.BearerAccessRefreshToken;
-import io.micronaut.test.annotation.MicronautTest;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import ru.pudgy.vertex.AbstractBaseTest;
 import ru.pudgy.vertex.TestDataUtil;
 import ru.pudgy.vertex.rest.dto.TopicDto;
 import ru.pudgy.vertex.rest.dto.TopicNewDto;
 
-import javax.inject.Inject;
-
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@MicronautTest
-public class AuthTest extends AbstractBaseTest {
-    @Inject
-    EmbeddedServer server;
 
-    @Inject
-    @Client("/")
-    HttpClient client;
+public class AuthTest extends AbstractBaseTest {
+    private static EmbeddedServer server;
+    private static HttpClient client;
+
+    @BeforeAll
+    public static void setupServer() {
+        server = ApplicationContext.run(EmbeddedServer.class);
+        client = server
+                .getApplicationContext()
+                .createBean(HttpClient.class, server.getURL());
+    }
+
+    @AfterAll
+    public static void stopServer() {
+        if (server != null) {
+            server.stop();
+        }
+        if (client != null) {
+            client.stop();
+        }
+    }
 
     private static String TOKEN;
 
     @Test
+    @Order(10)
     void test01() {
         BearerAccessRefreshToken response = client.toBlocking()
                 .retrieve(HttpRequest.POST("/login", TestDataUtil.authPayload()), BearerAccessRefreshToken.class);
@@ -39,6 +54,7 @@ public class AuthTest extends AbstractBaseTest {
     }
 
     @Test
+    @Order(20)
     void test02() {
         assertThat(TOKEN).isNotBlank();
         List<TopicDto> topics = client.toBlocking().retrieve(HttpRequest.GET("/topic").bearerAuth(TOKEN), Argument.listOf(TopicDto.class));
@@ -46,6 +62,7 @@ public class AuthTest extends AbstractBaseTest {
     }
 
     @Test
+    @Order(30)
     void test03() {
         assertThat(TOKEN).isNotBlank();
         TopicNewDto topicNewDto = new TopicNewDto();
@@ -57,10 +74,10 @@ public class AuthTest extends AbstractBaseTest {
     }
 
     @Test
+    @Order(40)
     void test04() {
         assertThat(TOKEN).isNotBlank();
         List<TopicDto> topics = client.toBlocking().retrieve(HttpRequest.GET("/topic").bearerAuth(TOKEN), Argument.listOf(TopicDto.class));
         assertThat(topics).size().isEqualTo(1);
     }
-
 }

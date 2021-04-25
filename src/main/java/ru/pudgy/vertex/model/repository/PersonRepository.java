@@ -30,8 +30,8 @@ public interface PersonRepository extends CrudRepository<Person, UUID> {
             " p.schemata = :schema " +
             " and (" +
             "       upper( COALESCE(p.family, ' ' ) || ' '  || COALESCE(p.name, ' ')  ||' ' ||  COALESCE(p.sername, ' ')) like upper(:searchString) " +
-            "       or (select true from fragmentperson fp  where fp.fragment = :fragment and fp.person = p.id) " +
+            "       or (select true from fragmentperson fp  where fp.fragment = :fragment1 and fp.person = p.id) " +
             "     )" +
             "order by checked, upper( COALESCE(p.family, ' ' ) || ' '  || COALESCE(p.name, ' ')  ||' ' ||  COALESCE(p.sername, ' '))", nativeQuery = true)
-    List<Person> findBySchemataAndFragmentAndNameIlike(UUID schema, UUID fragment, String searchString);
+    List<Person> findBySchemataAndFragmentAndNameIlike(UUID schema, UUID fragment,UUID fragment1, String searchString);
 }

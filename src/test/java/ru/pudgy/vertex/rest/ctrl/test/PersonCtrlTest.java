@@ -1,42 +1,52 @@
 package ru.pudgy.vertex.rest.ctrl.test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.micronaut.context.ApplicationContext;
 import io.micronaut.core.type.Argument;
 import io.micronaut.data.model.Page;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.client.HttpClient;
-import io.micronaut.http.client.annotation.Client;
 import io.micronaut.runtime.server.EmbeddedServer;
 import io.micronaut.security.token.jwt.render.BearerAccessRefreshToken;
-import io.micronaut.test.annotation.MicronautTest;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import ru.pudgy.vertex.AbstractBaseTest;
 import ru.pudgy.vertex.TestDataUtil;
 import ru.pudgy.vertex.rest.dto.PersonDto;
 import ru.pudgy.vertex.rest.dto.PersonNewDto;
-import ru.pudgy.vertex.util.RestResponsePage;
 
-import javax.inject.Inject;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@MicronautTest
 public class PersonCtrlTest extends AbstractBaseTest {
 
-    @Inject
-    EmbeddedServer server;
+    private static EmbeddedServer server;
+    private static HttpClient client;
 
-    @Inject
-    @Client("/")
-    HttpClient client;
+    @BeforeAll
+    public static void setupServer() {
+        server = ApplicationContext.run(EmbeddedServer.class);
+        client = server
+                .getApplicationContext()
+                .createBean(HttpClient.class, server.getURL());
+    }
+
+    @AfterAll
+    public static void stopServer() {
+        if (server != null) {
+            server.stop();
+        }
+        if (client != null) {
+            client.stop();
+        }
+    }
 
     private static String TOKEN;
 
     @Test
+    @Order(10)
     void test01() {
         BearerAccessRefreshToken response = client.toBlocking()
                 .retrieve(HttpRequest.POST("/login", TestDataUtil.authPayload()), BearerAccessRefreshToken.class);
@@ -44,6 +54,7 @@ public class PersonCtrlTest extends AbstractBaseTest {
     }
 
     @Test
+    @Order(20)
     @DisplayName("list empty person list")
     void test02() throws JsonProcessingException {
         assertThat(TOKEN).isNotBlank();
@@ -51,13 +62,14 @@ public class PersonCtrlTest extends AbstractBaseTest {
                 .retrieve(
                         HttpRequest.GET("/person")
                                 .bearerAuth(TOKEN),
-                        Argument.of(RestResponsePage.class, PersonDto.class)
+                        Argument.of(Page.class, PersonDto.class)
                 );
 
         assertEquals(0, persons.getContent().size()); //)
     }
 
     @Test
+    @Order(30)
     @DisplayName("create person")
     void test03() {
         assertThat(TOKEN).isNotBlank();
@@ -81,6 +93,7 @@ public class PersonCtrlTest extends AbstractBaseTest {
     }
 
     @Test
+    @Order(40)
     @DisplayName("get person list")
     void test031(){
         assertThat(TOKEN).isNotBlank();
@@ -93,13 +106,14 @@ public class PersonCtrlTest extends AbstractBaseTest {
         Page<PersonDto> persons = client.toBlocking()
                 .retrieve(
                         HttpRequest.GET("/person").bearerAuth(TOKEN),
-                        Argument.of(RestResponsePage.class, PersonDto.class)
+                        Argument.of(Page.class, PersonDto.class)
                 );
 
         assertEquals(1, persons.getContent().size()); //)
     }
 
     @Test
+    @Order(50)
     @DisplayName("update person list")
     void test032(){
         assertThat(TOKEN).isNotBlank();
@@ -107,7 +121,7 @@ public class PersonCtrlTest extends AbstractBaseTest {
         Page<PersonDto> persons = client.toBlocking()
                 .retrieve(
                         HttpRequest.GET("/person").bearerAuth(TOKEN),
-                        Argument.of(RestResponsePage.class, PersonDto.class)
+                        Argument.of(Page.class, PersonDto.class)
                 );
 
         assertEquals(1, persons.getContent().size());
@@ -126,6 +140,7 @@ public class PersonCtrlTest extends AbstractBaseTest {
     }
 
     @Test
+    @Order(60)
     @DisplayName("delete person")
     void test09(){
         assertThat(TOKEN).isNotBlank();
@@ -133,7 +148,7 @@ public class PersonCtrlTest extends AbstractBaseTest {
         Page<PersonDto> persons = client.toBlocking()
                 .retrieve(
                         HttpRequest.GET("/person").bearerAuth(TOKEN),
-                        Argument.of(RestResponsePage.class, PersonDto.class)
+                        Argument.of(Page.class, PersonDto.class)
                 );
 
         assertEquals(1, persons.getContent().size());
@@ -148,10 +163,9 @@ public class PersonCtrlTest extends AbstractBaseTest {
         persons = client.toBlocking()
                 .retrieve(
                         HttpRequest.GET("/person").bearerAuth(TOKEN),
-                        Argument.of(RestResponsePage.class, PersonDto.class)
+                        Argument.of(Page.class, PersonDto.class)
                 );
 
         assertEquals(0, persons.getContent().size());
-
     }
 }

@@ -14,6 +14,6 @@ public class NoteStatisticUsecase {
     private final StatisticRepository statisticRepository;
 
     public List<Statistic> execute(Schemata schema) {
-        return statisticRepository.getNotePurposeStatistic(schema.getId());
+        return statisticRepository.getNotePurposeStatistic(schema.getId(), schema.getId());
     }
 }

@@ -6,14 +6,28 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "fragmenttopic")
 public class FragmentTopic {
     @EmbeddedId
     private FragmentTopicKey key;
+
+    public FragmentTopic() {
+    }
+
+    public FragmentTopic(FragmentTopicKey key) {
+        this.key = key;
+    }
+
+    public FragmentTopicKey getKey() {
+        return key;
+    }
+
+    public void setKey(FragmentTopicKey key) {
+        this.key = key;
+    }
 }
 
 

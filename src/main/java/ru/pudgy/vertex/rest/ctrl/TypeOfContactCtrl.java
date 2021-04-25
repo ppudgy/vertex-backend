@@ -8,8 +8,6 @@ import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
 import lombok.RequiredArgsConstructor;
 import ru.pudgy.vertex.exceptions.NotAuthorizedException;
-import ru.pudgy.vertex.model.entity.Topic;
-import ru.pudgy.vertex.model.entity.TypeOfContact;
 import ru.pudgy.vertex.rest.dto.TopicDto;
 import ru.pudgy.vertex.rest.dto.TopicNewDto;
 import ru.pudgy.vertex.rest.dto.TypeOfContactDto;
@@ -41,12 +39,14 @@ public class TypeOfContactCtrl {
                         .collect(Collectors.toList())
                 )
                 .map(list -> HttpResponse.ok().body(list))
-                .orElseThrow(() -> new NotAuthorizedException("Not authorized"));
+                //.orElseThrow(() -> new NotAuthorizedException("Not authorized"));
+                .orElseGet(() -> HttpResponse.status(HttpStatus.UNAUTHORIZED));
     }
 
     @Get(value = "/typeofcontact/{id}", produces = MediaType.APPLICATION_JSON)
     HttpResponse<TypeOfContactDto> typeofcontact(@PathVariable @NotNull UUID id) {
         return SecurityHelper.currentSchema()
+                //.map(schema -> typeOfContactByIdUsecase.execute(schema.getId(), id))
                 .map(schema -> typeOfContactByIdUsecase.execute(schema.getId(), id))
                 .map(typeOfContact -> typeOfContactMapper.toDto(typeOfContact))
                 .map(dto -> HttpResponse.ok().body(dto))
@@ -62,7 +62,6 @@ public class TypeOfContactCtrl {
                 .map(topic -> topicMapper.toDto(topic))
                 .map(dto -> HttpResponse.created(dto))
                 .orElseThrow(() -> new NotAuthorizedException("Not authorized"));
-
  */
     }
 

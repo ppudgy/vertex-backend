@@ -30,7 +30,7 @@ public class ListFragmentTopicUsecase {
                     .collect(Collectors.toList());
             return topicListUsecase.execute(schema, topics);
         } else {
-            List<Topic> res = topicRepository.findByFragmentAndNameIlike(schema.getId(), fragment, searchString);
+            List<Topic> res = topicRepository.findByFragmentAndNameIlike(schema.getId(), fragment, fragment, searchString);
             return res;
         }
     }

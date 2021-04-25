@@ -40,5 +40,5 @@ flyway:
 
 
 text:
-  annotationBuilder: Glagol
+  annotationBuilder: Simple
 

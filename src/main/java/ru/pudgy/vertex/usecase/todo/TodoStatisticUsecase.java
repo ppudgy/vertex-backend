@@ -14,6 +14,6 @@ public class TodoStatisticUsecase {
     private final StatisticRepository statisticRepository;
 
     public List<Statistic> execute(Schemata schema) {
-        return statisticRepository.getTodoPurposeStatistic(schema.getId());
+        return statisticRepository.getTodoPurposeStatistic(schema.getId(), schema.getId());
     }
 }

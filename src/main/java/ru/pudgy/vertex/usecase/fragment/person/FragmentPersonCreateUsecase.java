@@ -17,8 +17,8 @@ public class FragmentPersonCreateUsecase {
         FragmentPersonKey key = new FragmentPersonKey();
         key.setFragment(fragment);
         key.setPerson(newperson.getId());
-        FragmentPerson ft = new FragmentPerson();
-        ft.setKey(key);
+        FragmentPerson ft = new FragmentPerson(key);
+        //ft.setKey(key);
         ft = fragmentPersonRepository.save(ft);
         return fragmentPersonByIdUsecase.execute(schema, doc, fragment, newperson.getId());
     }

@@ -11,7 +11,9 @@ import lombok.Data;
 import java.util.Collections;
 import java.util.List;
 
+
 @Data
+@Deprecated
 public class RestResponsePage<T> implements Page<T> {
     private List<T> content;
     Long totalElements;
@@ -20,8 +22,12 @@ public class RestResponsePage<T> implements Page<T> {
     int size;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public RestResponsePage(@JsonProperty("content") List<T> content, @JsonProperty("pageNumber") int number, @JsonProperty("size") int size,
-                            @JsonProperty("totalSize") Long totalElements, @JsonProperty("pageable") JsonNode pageable, @JsonProperty("last") boolean last,
+    public RestResponsePage(@JsonProperty("content") List<T> content,
+                            @JsonProperty("pageNumber") int number,
+                            @JsonProperty("size") int size,
+                            @JsonProperty("totalSize") Long totalElements,
+                            //@JsonProperty("pageable") JsonNode pageable,
+                            //@JsonProperty("last") boolean last,
                             @JsonProperty("totalPages") int totalPages ) {
         this.content = content == null ? Collections.emptyList() : content;
         this.totalElements = totalElements;

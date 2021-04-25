@@ -1,40 +1,51 @@
 package ru.pudgy.vertex.rest.ctrl.test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.micronaut.context.ApplicationContext;
 import io.micronaut.core.type.Argument;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.client.HttpClient;
-import io.micronaut.http.client.annotation.Client;
 import io.micronaut.runtime.server.EmbeddedServer;
 import io.micronaut.security.token.jwt.render.BearerAccessRefreshToken;
-import io.micronaut.test.annotation.MicronautTest;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import ru.pudgy.vertex.AbstractBaseTest;
 import ru.pudgy.vertex.TestDataUtil;
 import ru.pudgy.vertex.rest.dto.PurposeDto;
 import ru.pudgy.vertex.rest.dto.PurposeNewDto;
 
-import javax.inject.Inject;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@MicronautTest
 public class PurposeCtrlTest extends AbstractBaseTest {
 
-    @Inject
-    EmbeddedServer server;
+    private static EmbeddedServer server;
+    private static HttpClient client;
 
-    @Inject
-    @Client("/")
-    HttpClient client;
+    @BeforeAll
+    public static void setupServer() {
+        server = ApplicationContext.run(EmbeddedServer.class);
+        client = server
+                .getApplicationContext()
+                .createBean(HttpClient.class, server.getURL());
+    }
+
+    @AfterAll
+    public static void stopServer() {
+        if (server != null) {
+            server.stop();
+        }
+        if (client != null) {
+            client.stop();
+        }
+    }
 
     private static String TOKEN;
 
     @Test
+    @Order(10)
     void test01() {
         BearerAccessRefreshToken response = client.toBlocking()
                 .retrieve(HttpRequest.POST("/login", TestDataUtil.authPayload()), BearerAccessRefreshToken.class);
@@ -42,6 +53,7 @@ public class PurposeCtrlTest extends AbstractBaseTest {
     }
 
     @Test
+    @Order(20)
     @DisplayName("list empty purpose list")
     void test02() throws JsonProcessingException {
         assertThat(TOKEN).isNotBlank();
@@ -56,6 +68,7 @@ public class PurposeCtrlTest extends AbstractBaseTest {
     }
 
     @Test
+    @Order(30)
     @DisplayName("create purpose")
     void test03() {
         assertThat(TOKEN).isNotBlank();
@@ -73,7 +86,9 @@ public class PurposeCtrlTest extends AbstractBaseTest {
         assertEquals("test-purpose", purpose.getName());
         assertNotNull(purpose.getId());
     }
+
     @Test
+    @Order(40)
     @DisplayName("get purpose list")
     void test031() throws JsonProcessingException {
         assertThat(TOKEN).isNotBlank();
