@@ -7,11 +7,13 @@ import io.micronaut.http.annotation.*;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
 import lombok.RequiredArgsConstructor;
+import ru.pudgy.result.Result;
 import ru.pudgy.vertex.exceptions.NotAuthorizedException;
 import ru.pudgy.vertex.model.entity.Contact;
 import ru.pudgy.vertex.model.entity.Person;
 import ru.pudgy.vertex.rest.dto.*;
 import ru.pudgy.vertex.rest.mappers.ContactMapper;
+import ru.pudgy.vertex.rest.mappers.ErrorMapper;
 import ru.pudgy.vertex.rest.mappers.PersonMapper;
 import ru.pudgy.vertex.rest.security.SecurityHelper;
 import ru.pudgy.vertex.usecase.person.*;
@@ -41,33 +43,29 @@ public class ContactCtrl {
             @Nullable UUID type,
             @Nullable String searchString
     ) {
-        return SecurityHelper.currentSchema()
-                .map(schema -> listContactUsecase.execute(schema, person, type, searchString))
-                .map(_list -> _list.stream()
-                        .map(contact -> contactMapper.toDto(contact))
-                        .collect(Collectors.toList())
-
-                )
-                .map(_list -> HttpResponse.ok(_list))
-                .orElseThrow(() -> new NotAuthorizedException(""));
+        return SecurityHelper.currentSchemata()
+                .map(schema -> listContactUsecase.executeR(schema, person, type, searchString))
+                .map(_list -> Result.ok(_list.stream().map(contactMapper::toDto).collect(Collectors.toList())))
+                .map(_list -> Result.ok(HttpResponse.ok(_list)))
+                .recover(ErrorMapper::toHttpResponse);
     }
 
     @Get(value = "/person/{person}/contact/{id}", produces = MediaType.APPLICATION_JSON)
     HttpResponse<ContactDto> topic(@PathVariable @NotNull UUID person, @PathVariable @NotNull UUID id) {
-        return SecurityHelper.currentSchema()
-                .map(schema -> contactByIdUsecase.execute(schema, person, id))
-                .map(contact -> contactMapper.toDto(contact))
-                .map(dto -> HttpResponse.ok(dto))
-                .orElseThrow(() -> new NotAuthorizedException("Not authorized"));
+        return SecurityHelper.currentSchemata()
+                .map(schema -> contactByIdUsecase.executeR(schema, person, id))
+                .map(contact -> Result.ok(contactMapper.toDto(contact)))
+                .map(dto -> Result.ok(HttpResponse.ok(dto)))
+                .recover(ErrorMapper::toHttpResponse);
     }
 
     @Put(value = "/person/{person}/contact", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
     HttpResponse<ContactDto> create(@PathVariable @NotNull UUID person, @NotNull @Body ContactNewDto contactDto) {
-        return SecurityHelper.currentSchema()
-                .map(schema -> contactCreateUsecase.execute(schema, person, contactMapper.toEntity(schema, person, contactDto)))
-                .map(contact -> contactMapper.toDto(contact))
-                .map(dto -> HttpResponse.created(dto))
-                .orElseThrow(() -> new NotAuthorizedException("Not authorized"));
+        return SecurityHelper.currentSchemata()
+                .map(schema -> contactCreateUsecase.executeR(schema, person, contactMapper.toEntity(schema, person, contactDto)))
+                .map(contact -> Result.ok(contactMapper.toDto(contact)))
+                .map(dto -> Result.ok(HttpResponse.created(dto)))
+                .recover(ErrorMapper::toHttpResponse);
     }
 
     @Post(value = "/person/{person}/contact/{id}", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)

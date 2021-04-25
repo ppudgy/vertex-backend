@@ -59,7 +59,6 @@ public class TypeOfContactCtrlExt {
         return result;
     }
 
-
     @Put(value = "/typeofcontact", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
     HttpResponse<TopicDto> create(@NotNull @Body TopicNewDto topicDto) {
         return HttpResponse.status(HttpStatus.METHOD_NOT_ALLOWED);

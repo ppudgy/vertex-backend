@@ -180,9 +180,4 @@ public class TypeOfContactTest extends AbstractBaseTest {
         var msg = response.getBody(String.class);
         assertThat(msg).isNotEmpty().get().isEqualTo(errorResult);
     }
-
-
-
-
-
 }

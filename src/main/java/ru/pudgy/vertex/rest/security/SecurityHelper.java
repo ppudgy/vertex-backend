@@ -37,7 +37,7 @@ public class SecurityHelper {
                         return Result.<Schemata, VertexError>error(new ParseJsonVertexError(e.getMessage()));
                     }
                 })
-                .orElseGet(() ->Result.error(new NotAuthenticatedVertexError("not authentication")));
+                .orElseGet(() ->Result.error(new NotAuthenticatedVertexError("not authenticate")));
     }
 
     public static Optional<Schemata> currentSchema() {

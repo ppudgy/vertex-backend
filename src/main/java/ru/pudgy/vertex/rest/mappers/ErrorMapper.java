@@ -14,7 +14,7 @@ public interface ErrorMapper{
         //return switch(error) {
             // case NotAuthenticatedVertexError -> HttpResponse.status(HttpStatus.UNAUTHORIZED);
             if(error instanceof NotAuthenticatedVertexError n) {
-                return HttpResponse.status(HttpStatus.UNAUTHORIZED).body((T)AuthenticationErrorDto.of());
+                return HttpResponse.status(HttpStatus.UNAUTHORIZED).body((T)AuthenticationErrorDto.of(n.msg()));
             // case EntityNotFoundVertexError -> HttpResponse.notFound();
             } else if (error instanceof EntityNotFoundVertexError n) {
                 return HttpResponse.notFound().body((T)EntityNotFoundErrorDto.of(n.id(), n.clazz().getName()));

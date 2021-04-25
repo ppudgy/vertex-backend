@@ -6,5 +6,5 @@ import lombok.RequiredArgsConstructor;
 @Data
 @RequiredArgsConstructor(staticName = "of")
 public class AuthenticationErrorDto {
-
+    private final String msg;
 }
