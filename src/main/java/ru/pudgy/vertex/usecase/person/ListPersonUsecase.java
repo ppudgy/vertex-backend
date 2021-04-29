@@ -21,18 +21,13 @@ public class ListPersonUsecase {
     private final TextService textService;
 
     public Page<Person> execute(Schemata schema, Integer page, Integer size, String searchString) {
-        Page<Person> result = Page.empty();
         Pageable pageable = Pageable.from(
                 Optional.ofNullable(page).orElse(0),
                 Optional.ofNullable(size).orElse(10)
         );
-        searchString = textService.formatSearchString(searchString);
-        if(searchString != null) {
-            result = personRepository.findBySchemataAndTextIlike(schema.getId(), searchString, pageable);
-        } else {
-            result = personRepository.findBySchemata(schema.getId(), pageable);
-        }
-        return result;
+        return textService.formatSearchString(searchString)
+              .map(formatString -> personRepository.findBySchemataAndTextIlike(schema.getId(), formatString, pageable))
+              .orElseGet(() -> personRepository.findBySchemata(schema.getId(), pageable));
     }
 
     public List<Person> execute(Schemata schema, List<UUID> persons) {

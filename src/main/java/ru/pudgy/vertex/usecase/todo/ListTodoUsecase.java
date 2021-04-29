@@ -28,16 +28,20 @@ public class ListTodoUsecase {
                 Optional.ofNullable(page).orElse(0),
                 Optional.ofNullable(size).orElse(10)
         );
-        searchString = textService.formatSearchString(searchString);
-        if(purpose != null && searchString != null) {
-            result = todoRepository.findBySchemataAndPurposeAndDescriptionIlike(schemata.getId(), purpose, searchString, pageable);
-        } else if(purpose != null) {
-            result = todoRepository.findBySchemataAndPurpose(schemata.getId(), purpose, pageable);
-        } else if(searchString != null) {
-            result = todoRepository.findBySchemataAndDescriptionIlike(schemata.getId(), searchString, pageable);
-        } else {
-            result = todoRepository.findBySchemata(schemata.getId(), pageable);
-        }
-        return result;
+        return textService.formatSearchString(searchString)
+                .map(formatString -> {
+                    if(purpose != null) {
+                        return todoRepository.findBySchemataAndPurposeAndDescriptionIlike(schemata.getId(), purpose, formatString, pageable);
+                    } else {
+                        return todoRepository.findBySchemataAndDescriptionIlike(schemata.getId(), formatString, pageable);
+                    }
+                })
+                .orElseGet(() -> {
+                    if(purpose != null) {
+                        return todoRepository.findBySchemataAndPurpose(schemata.getId(), purpose, pageable);
+                    } else {
+                        return todoRepository.findBySchemata(schemata.getId(), pageable);
+                    }
+                });
     }
 }

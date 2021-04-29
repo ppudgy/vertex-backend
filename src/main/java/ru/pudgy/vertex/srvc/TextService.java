@@ -15,12 +15,12 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 public class TextService {
-    private final TextProperty property;
 
+    private final TextProperty property;
 
     private final static String ANNOTATION_ERROR_STRING = "Fail to create annotation";
 
-    public String formatSearchString(String search_string){
+    public Optional<String> formatSearchString(String search_string){
         return Optional.ofNullable(search_string)
                 .map(str -> {
                     String ls = search_string.trim();
@@ -35,8 +35,7 @@ public class TextService {
                         return builder.toString();
                     }
                     return null;
-                })
-                .orElse(null);
+                });
     }
 
     public String createAnnotation(String text) {

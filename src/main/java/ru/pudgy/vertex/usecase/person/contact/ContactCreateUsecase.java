@@ -20,12 +20,7 @@ public class ContactCreateUsecase {
     private final ContactRepository contactRepository;
     private final ContactUpdater contactUpdater;
 
-    public Contact execute(Schemata schema, UUID person, Contact newContact) {
-        return contactRepository.save(contactUpdater.createContact(schema, newContact));
-    }
-
-
-    public Result<Contact, VertexError> executeR(Schemata schema, UUID person, Contact newContact) {
+    public Result<Contact, VertexError> execute(Schemata schema, UUID person, Contact newContact) {
        try {
            return Result.ok(contactRepository.save(contactUpdater.createContact(schema, newContact)));
        } catch (RuntimeException e) {

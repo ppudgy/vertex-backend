@@ -19,36 +19,22 @@ public class ListContactUsecase {
     private final ContactRepository contactRepository;
     private final TextService textService;
 
-    public List<Contact> execute(Schemata schema, UUID person, UUID type, String searchString) {
-        List<Contact> result = Collections.emptyList();
-        searchString = textService.formatSearchString(searchString);
-
-        if (type != null && searchString != null) {
-            result = contactRepository.findBySchemataAndPersonAndTypeofcontactAndContactIlike(schema.getId(), person, type, searchString);
-        } else if (type != null) {
-            result = contactRepository.findBySchemataAndPersonAndTypeofcontact(schema.getId(), person, type);
-        } else if (searchString != null) {
-            result = contactRepository.findBySchemataAndPersonAndContactIlike(schema.getId(), person, searchString);
-        } else {
-            result = contactRepository.findBySchemataAndPerson(schema.getId(), person);
-        }
-        return result;
-    }
-
-
-    public Result<List<Contact>, VertexError> executeR(Schemata schema, UUID person, UUID type, String searchString) {
-        List<Contact> result = Collections.emptyList();
-        searchString = textService.formatSearchString(searchString);
-
-        if (type != null && searchString != null) {
-            result = contactRepository.findBySchemataAndPersonAndTypeofcontactAndContactIlike(schema.getId(), person, type, searchString);
-        } else if (type != null) {
-            result = contactRepository.findBySchemataAndPersonAndTypeofcontact(schema.getId(), person, type);
-        } else if (searchString != null) {
-            result = contactRepository.findBySchemataAndPersonAndContactIlike(schema.getId(), person, searchString);
-        } else {
-            result = contactRepository.findBySchemataAndPerson(schema.getId(), person);
-        }
+    public Result<List<Contact>, VertexError> execute(Schemata schema, UUID person, UUID type, String searchString) {
+        List<Contact> result = textService.formatSearchString(searchString)
+                .map(formatString -> {
+                    if (type != null) {
+                        return contactRepository.findBySchemataAndPersonAndTypeofcontactAndContactIlike(schema.getId(), person, type, formatString);
+                    } else{
+                        return contactRepository.findBySchemataAndPersonAndContactIlike(schema.getId(), person, formatString);
+                    }
+                })
+                .orElseGet(()->{
+                    if (type != null) {
+                        return contactRepository.findBySchemataAndPersonAndTypeofcontact(schema.getId(), person, type);
+                    } else {
+                        return contactRepository.findBySchemataAndPerson(schema.getId(), person);
+                    }
+                });
         return Result.ok(result);
     }
 }

@@ -18,10 +18,8 @@ public class ListFragmentForPersonUseCase {
     private final TextService textService;
 
     public List<Fragment> execute(Schemata schema, UUID person, String searchString) {
-        searchString = textService.formatSearchString(searchString);
-
-        return StringUtils.isEmpty(searchString)
-                ? fragmentRepository.findBySchemataAndPerson(schema.getId(), person)
-                : fragmentRepository.findBySchemataAndPersonAndTextIlike(schema.getId(), person, searchString);
+        return textService.formatSearchString(searchString)
+            .map(formatString -> fragmentRepository.findBySchemataAndPersonAndTextIlike(schema.getId(), person, formatString))
+            .orElseGet(() -> fragmentRepository.findBySchemataAndPerson(schema.getId(), person));
     }
 }

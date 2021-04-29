@@ -23,15 +23,13 @@ public class ListFragmentTopicUsecase {
     private final TextService textService;
 
     public List<Topic> execute(Schemata schema, UUID doc, UUID fragment, String searchString) {
-        searchString = textService.formatSearchString(searchString);
-        if(StringUtils.isEmpty(searchString)) {
-            List<UUID> topics = fragmentTopicRepository.findByFragment(fragment).stream()
-                    .map(ft -> ft.getKey().getTopic())
-                    .collect(Collectors.toList());
-            return topicListUsecase.execute(schema, topics);
-        } else {
-            List<Topic> res = topicRepository.findByFragmentAndNameIlike(schema.getId(), fragment, fragment, searchString);
-            return res;
-        }
+        return textService.formatSearchString(searchString)
+                .map(formatString -> topicRepository.findByFragmentAndNameIlike(schema.getId(), fragment, fragment, formatString))
+                .orElseGet(() -> {
+                    List<UUID> topics = fragmentTopicRepository.findByFragment(fragment).stream()
+                            .map(ft -> ft.getKey().getTopic())
+                            .collect(Collectors.toList());
+                    return topicListUsecase.execute(schema, topics);
+                });
     }
 }

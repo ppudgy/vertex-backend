@@ -17,12 +17,7 @@ import java.util.UUID;
 public class ContactByIdUsecase {
     private final ContactRepository contactRepository;
 
-    public Contact execute(Schemata schema, UUID person, UUID id) {
-        return contactRepository.findBySchemataAndPersonAndId(schema.getId(), person, id)
-                .orElseThrow(() -> new NotFoundException(String.format("contact(%s) for person(%s) not found", id.toString(), person.toString())));
-    }
-
-    public Result<Contact, VertexError> executeR(Schemata schema, UUID person, UUID id) {
+    public Result<Contact, VertexError> execute(Schemata schema, UUID person, UUID id) {
         return contactRepository.findBySchemataAndPersonAndId(schema.getId(), person, id)
                 .map(Result::<Contact, VertexError>ok)
                 .orElseGet(() -> Result.error(new EntityNotFoundVertexError<>(Contact.class, id)) );

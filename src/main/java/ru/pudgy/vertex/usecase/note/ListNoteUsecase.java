@@ -26,21 +26,24 @@ public class ListNoteUsecase {
                               @Nullable UUID purpose,
                               @Nullable  String searchString
     ) {
-        Page<Note> result = Page.empty();
         Pageable pageable = Pageable.from(
                 Optional.ofNullable(page).orElse(0),
                 Optional.ofNullable(size).orElse(10)
         );
-        searchString = textService.formatSearchString(searchString);
-        if(purpose != null && searchString != null) {
-            result = noteRepository.findBySchemataAndPurposeAndTextIlike(schemata.getId(), purpose, searchString, pageable);
-        } else if(purpose != null) {
-            result = noteRepository.findBySchemataAndPurpose(schemata.getId(), purpose, pageable);
-        } else if(searchString != null) {
-            result = noteRepository.findBySchemataAndTextIlike(schemata.getId(), searchString, pageable);
-        } else {
-            result = noteRepository.findBySchemata(schemata.getId(), pageable);
-        }
-        return result;
+        return textService.formatSearchString(searchString)
+                .map(formatString -> {
+                    if(purpose != null) {
+                        return noteRepository.findBySchemataAndPurposeAndTextIlike(schemata.getId(), purpose, formatString, pageable);
+                    } else{
+                        return noteRepository.findBySchemataAndTextIlike(schemata.getId(), formatString, pageable);
+                    }
+                })
+                .orElseGet(() -> {
+                    if(purpose != null) {
+                        return noteRepository.findBySchemataAndPurpose(schemata.getId(), purpose, pageable);
+                    } else {
+                        return noteRepository.findBySchemata(schemata.getId(), pageable);
+                    }
+                });
     }
 }

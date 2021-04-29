@@ -1,6 +1,5 @@
 package ru.pudgy.vertex.rest.ctrl;
 
-import io.micronaut.data.model.Page;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.*;
@@ -9,17 +8,12 @@ import io.micronaut.security.rules.SecurityRule;
 import lombok.RequiredArgsConstructor;
 import ru.pudgy.result.Result;
 import ru.pudgy.vertex.exceptions.NotAuthorizedException;
-import ru.pudgy.vertex.model.entity.Contact;
-import ru.pudgy.vertex.model.entity.Person;
 import ru.pudgy.vertex.rest.dto.*;
 import ru.pudgy.vertex.rest.mappers.ContactMapper;
 import ru.pudgy.vertex.rest.mappers.ErrorMapper;
-import ru.pudgy.vertex.rest.mappers.PersonMapper;
 import ru.pudgy.vertex.rest.security.SecurityHelper;
-import ru.pudgy.vertex.usecase.person.*;
 import ru.pudgy.vertex.usecase.person.contact.*;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -44,7 +38,7 @@ public class ContactCtrl {
             @Nullable String searchString
     ) {
         return SecurityHelper.currentSchemata()
-                .map(schema -> listContactUsecase.executeR(schema, person, type, searchString))
+                .map(schema -> listContactUsecase.execute(schema, person, type, searchString))
                 .map(_list -> Result.ok(_list.stream().map(contactMapper::toDto).collect(Collectors.toList())))
                 .map(_list -> Result.ok(HttpResponse.ok(_list)))
                 .recover(ErrorMapper::toHttpResponse);
@@ -53,7 +47,7 @@ public class ContactCtrl {
     @Get(value = "/person/{person}/contact/{id}", produces = MediaType.APPLICATION_JSON)
     HttpResponse<ContactDto> topic(@PathVariable @NotNull UUID person, @PathVariable @NotNull UUID id) {
         return SecurityHelper.currentSchemata()
-                .map(schema -> contactByIdUsecase.executeR(schema, person, id))
+                .map(schema -> contactByIdUsecase.execute(schema, person, id))
                 .map(contact -> Result.ok(contactMapper.toDto(contact)))
                 .map(dto -> Result.ok(HttpResponse.ok(dto)))
                 .recover(ErrorMapper::toHttpResponse);
@@ -62,7 +56,7 @@ public class ContactCtrl {
     @Put(value = "/person/{person}/contact", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
     HttpResponse<ContactDto> create(@PathVariable @NotNull UUID person, @NotNull @Body ContactNewDto contactDto) {
         return SecurityHelper.currentSchemata()
-                .map(schema -> contactCreateUsecase.executeR(schema, person, contactMapper.toEntity(schema, person, contactDto)))
+                .map(schema -> contactCreateUsecase.execute(schema, person, contactMapper.toEntity(schema, person, contactDto)))
                 .map(contact -> Result.ok(contactMapper.toDto(contact)))
                 .map(dto -> Result.ok(HttpResponse.created(dto)))
                 .recover(ErrorMapper::toHttpResponse);
@@ -70,18 +64,18 @@ public class ContactCtrl {
 
     @Post(value = "/person/{person}/contact/{id}", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
     HttpResponse<ContactDto> update(@PathVariable @NotNull UUID person, @NotNull @PathVariable UUID id, @NotNull @Body ContactDto contactDto) {
-        return SecurityHelper.currentSchema()
+        return SecurityHelper.currentSchemata()
                 .map(schema -> contactUpdateUsecase.execute(schema, person, id, contactMapper.toEntity(schema, person, contactDto)))
-                .map(contact -> contactMapper.toDto(contact))
-                .map(dto -> HttpResponse.ok().body(dto))
-                .orElseThrow(() -> new NotAuthorizedException("Not authorized"));
+                .map(contact -> Result.ok(contactMapper.toDto(contact)))
+                .map(dto -> Result.ok(HttpResponse.ok().body(dto)))
+                .recover(ErrorMapper::toHttpResponse);
     }
 
     @Delete("/person/{person}/contact/{id}")
     HttpResponse<?> delete(@PathVariable @NotNull UUID person, @PathVariable @NotNull UUID id) {
-        return SecurityHelper.currentSchema()
-                .map(schema -> contactDeleteUsecase.execute(schema, person, id))
-                .map(a ->  HttpResponse.noContent())
-                .orElseThrow(() -> new NotAuthorizedException("Not authorized"));
+        return SecurityHelper.currentSchemata()
+                .map(schema -> Result.ok(contactDeleteUsecase.execute(schema, person, id)))
+                .map(a ->  Result.ok(HttpResponse.noContent()))
+                .recover(ErrorMapper::toHttpResponse);
     }
 }

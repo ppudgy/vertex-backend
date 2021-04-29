@@ -18,10 +18,9 @@ public class ListFragmentForTopicUseCase {
     private final TextService textService;
 
     public List<Fragment> execute(Schemata schema, UUID topic, String searchString) {
-        searchString = textService.formatSearchString(searchString);
 
-        return StringUtils.isEmpty(searchString)
-                ? fragmentRepository.findBySchemataAndTopic(schema.getId(), topic)
-                : fragmentRepository.findBySchemataAndTopicAndTextIlike(schema.getId(), topic, searchString);
+        return textService.formatSearchString(searchString)
+                .map(formatString -> fragmentRepository.findBySchemataAndTopicAndTextIlike(schema.getId(), topic, formatString))
+                .orElseGet(() -> fragmentRepository.findBySchemataAndTopic(schema.getId(), topic));
     }
 }

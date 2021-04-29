@@ -23,15 +23,13 @@ public class ListFragmentPersonUsecase {
     private final TextService textService;
 
     public List<Person> execute(Schemata schema, UUID doc, UUID fragment, String searchString) {
-        searchString = textService.formatSearchString(searchString);
-        if(StringUtils.isEmpty(searchString)) {
-            List<UUID> persons = fragmentPersonRepository.findByFragment(fragment).stream()
-                    .map(ft -> ft.getKey().getPerson())
-                    .collect(Collectors.toList());
-            return listPersonUsecase.execute(schema, persons);
-        } else {
-            List<Person> res = personRepository.findBySchemataAndFragmentAndNameIlike(schema.getId(), fragment, fragment, searchString);
-            return res;
-        }
+        return textService.formatSearchString(searchString)
+                .map( formatString -> personRepository.findBySchemataAndFragmentAndNameIlike(schema.getId(), fragment, fragment, formatString))
+                .orElseGet(() -> {
+                    List<UUID> persons = fragmentPersonRepository.findByFragment(fragment).stream()
+                            .map(ft -> ft.getKey().getPerson())
+                            .collect(Collectors.toList());
+                    return listPersonUsecase.execute(schema, persons);
+                });
     }
 }

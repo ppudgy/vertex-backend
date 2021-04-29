@@ -1,12 +1,4 @@
 package ru.pudgy.vertex.utils;
 
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-
-@Data
-@RequiredArgsConstructor(staticName = "of")
 @Deprecated
-public class Pair<K, V> {
-    private final K key;
-    private final V value;
-}
+public record Pair<K, V> ( K key, V value){}

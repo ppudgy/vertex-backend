@@ -25,22 +25,26 @@ public class ListDocumentUsecase {
                                   @Nullable UUID purpose,
                                   @Nullable  String searchString
     ) {
-        Page<Document> result = Page.empty();
         Pageable pageable = Pageable.from(
-                Optional.ofNullable(page).orElse(0),
-                Optional.ofNullable(size).orElse(10)
+                page != null ? page : 0,
+                size != null ? size : 10
         );
-        searchString = textService.formatSearchString(searchString);
-        if(purpose != null && searchString != null) {
-            result = documentRepository.findBySchemataAndPurposeAndTextIlike(schemata.getId(), purpose, searchString, pageable);
-        } else if(purpose != null) {
-            result = documentRepository.findBySchemataAndPurpose(schemata.getId(), purpose, pageable);
-        } else if(searchString != null) {
-            result = documentRepository.findBySchemataAndTextIlike(schemata.getId(), searchString, pageable);
-        } else {
-            result = documentRepository.findBySchemata(schemata.getId(), pageable);
-        }
-        return result;
+
+        return textService.formatSearchString(searchString)
+                .map(formatString -> {
+                    if (purpose != null) {
+                        return documentRepository.findBySchemataAndPurposeAndTextIlike(schemata.getId(), purpose, formatString, pageable);
+                    } else {
+                        return documentRepository.findBySchemataAndTextIlike(schemata.getId(), formatString, pageable);
+                    }
+                })
+                .orElseGet(() -> {
+                    if (purpose != null) {
+                        return documentRepository.findBySchemataAndPurpose(schemata.getId(), purpose, pageable);
+                    } else {
+                        return documentRepository.findBySchemata(schemata.getId(), pageable);
+                    }
+                });
     }
 
 }
