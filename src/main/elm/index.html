@@ -1,0 +1,18 @@
+<html lang="ru">
+    <head>
+        <meta charset="utf-8"/>
+        <link rel="stylesheet" href="css/pico.min.css"/>
+        <script src="Freeling.js"></script>
+    </head>
+    <body>
+    <div id="main"></div>
+    <script>
+        var storageKey = "token";
+        var flags = localStorage.token || null;
+        var app = Elm.Vertex.init({flags:flags});
+        app.ports.storeToken.subscribe(function(token) {
+            localStorage.token = token;
+        });
+    </script>
+    </body>
+</html>
