@@ -1,7 +1,7 @@
 package ru.pudgy.vertex.usecase.dictionary;
 
 import lombok.RequiredArgsConstructor;
-import ru.pudgy.result.Result;
+import ru.pudgy.common.result.Result;
 import ru.pudgy.vertex.exceptions.NotFoundException;
 import ru.pudgy.vertex.model.entity.Schemata;
 import ru.pudgy.vertex.model.entity.TypeOfContact;
@@ -19,12 +19,12 @@ public class TypeOfContactByIdUsecase {
 
     public TypeOfContact execute(UUID schema, UUID id) {
         return typeOfContactRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format("type of contact(%s) not found", id.toString())));
+                .orElseThrow(() -> new NotFoundException(String.format("type of contact(%s) not found", id)));
     }
 
     public Result<TypeOfContact, VertexError> execute(Schemata schema, UUID id) {
         return typeOfContactRepository.findById(id)
                 .map(Result::<TypeOfContact, VertexError>ok)
-                .orElseGet(() -> Result.error(new EntityNotFoundVertexError(TypeOfContact.class, id)));
+                .orElseGet(() -> Result.error(new EntityNotFoundVertexError<>(TypeOfContact.class, id)));
     }
 }

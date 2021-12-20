@@ -3,11 +3,10 @@ package ru.pudgy.vertex.rest.security;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jnape.palatable.lambda.adt.Either;
 import io.micronaut.http.context.ServerRequestContext;
 import io.micronaut.security.authentication.Authentication;
 import lombok.extern.slf4j.Slf4j;
-import ru.pudgy.result.Result;
+import ru.pudgy.common.result.Result;
 import ru.pudgy.vertex.model.entity.Account;
 import ru.pudgy.vertex.model.entity.Schemata;
 import ru.pudgy.vertex.model.errors.NotAuthenticatedVertexError;
@@ -73,8 +72,6 @@ public class SecurityHelper {
     }
 
     private static Optional<Authentication> getAuthentication() {
-        return ServerRequestContext.currentRequest().flatMap((request) -> {
-            return request.getUserPrincipal(Authentication.class);
-        });
+        return ServerRequestContext.currentRequest().flatMap((request) ->  request.getUserPrincipal(Authentication.class));
     }
 }

@@ -2,13 +2,15 @@ package ru.pudgy.vertex.srvc;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ru.pudgy.common.result.Result;
+import ru.pudgy.common.result.ResultError;
+import ru.pudgy.common.result.ResultOk;
 import ru.pudgy.text.MorfoAnalyzer;
+import ru.pudgy.text.errors.GlagolTextError;
 import ru.pudgy.text.utils.freeling.FreeLing;
 import ru.pudgy.vertex.cfg.properties.TextProperty;
 
 import javax.inject.Singleton;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Optional;
 
 @Singleton
@@ -48,14 +50,17 @@ public class TextService {
     }
 
     private String createAnnotationGlagol(String text) {
-        try {
-            var document = MorfoAnalyzer.analyze(FreeLing.createPudgyRu(), text);
-            document.analyze();
-            return document.getAnotation();
-        } catch (IOException | URISyntaxException | InterruptedException e) {
-            log.error(e.getMessage(), e);
-            return ANNOTATION_ERROR_STRING;
+        var result = MorfoAnalyzer.analyze(FreeLing.createPudgyRu(), text)
+            .map(document -> {
+                document.analyze();
+                return Result.ok(document.getAnotation());
+            });
+        if (result instanceof ResultOk<String, GlagolTextError> ok) {
+            return ok.ok().orElseGet(() -> "no happened");
+        } else if (result instanceof ResultError<String, GlagolTextError> error) {
+            return error.error().map(Object::toString).orElseGet(() -> "no happened");
         }
+        return "no happened";
     }
 
     private String createAnnotationSimple(String text) {
@@ -70,7 +75,7 @@ public class TextService {
     private static String filterHtmlString(String search_string) {
         String lss = "";
         if(search_string != null){
-            String tmp_s = search_string.replaceAll("\\<.*?>", "");
+            String tmp_s = search_string.replaceAll("<.*?>", "");
             lss = tmp_s.trim();
         }
         return lss;

@@ -1,7 +1,7 @@
 package ru.pudgy.vertex.usecase.dictionary;
 
 import lombok.RequiredArgsConstructor;
-import ru.pudgy.result.Result;
+import ru.pudgy.common.result.Result;
 import ru.pudgy.vertex.model.entity.Schemata;
 import ru.pudgy.vertex.model.entity.TypeOfContact;
 import ru.pudgy.vertex.model.errors.VertexError;

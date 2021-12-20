@@ -1,5 +1,6 @@
 package ru.pudgy.vertex.rest.ctrl;
 
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.model.Page;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
@@ -14,7 +15,6 @@ import ru.pudgy.vertex.rest.mappers.StatisticMapper;
 import ru.pudgy.vertex.rest.security.SecurityHelper;
 import ru.pudgy.vertex.usecase.note.*;
 
-import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;

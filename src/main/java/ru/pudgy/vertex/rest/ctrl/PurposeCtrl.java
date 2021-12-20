@@ -7,7 +7,6 @@ import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
 import lombok.RequiredArgsConstructor;
 import ru.pudgy.vertex.exceptions.NotAuthorizedException;
-import ru.pudgy.vertex.model.entity.Purpose;
 import ru.pudgy.vertex.rest.dto.PurposeDto;
 import ru.pudgy.vertex.rest.dto.PurposeNewDto;
 import ru.pudgy.vertex.rest.mappers.PurposeMapper;

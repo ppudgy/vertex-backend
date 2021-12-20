@@ -1,7 +1,7 @@
 package ru.pudgy.vertex.usecase.person.contact;
 
 import lombok.RequiredArgsConstructor;
-import ru.pudgy.result.Result;
+import ru.pudgy.common.result.Result;
 import ru.pudgy.vertex.exceptions.NotFoundException;
 import ru.pudgy.vertex.model.entity.Contact;
 import ru.pudgy.vertex.model.entity.Schemata;

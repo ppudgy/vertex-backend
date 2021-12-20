@@ -7,7 +7,6 @@ import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
 import lombok.RequiredArgsConstructor;
 import ru.pudgy.vertex.exceptions.NotAuthorizedException;
-import ru.pudgy.vertex.model.entity.Fragment;
 import ru.pudgy.vertex.rest.dto.FragmentDto;
 import ru.pudgy.vertex.rest.dto.FragmentNewDto;
 import ru.pudgy.vertex.rest.mappers.FragmentMapper;

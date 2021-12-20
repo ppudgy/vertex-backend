@@ -2,7 +2,7 @@ package ru.pudgy.vertex.rest.security;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.umd.cs.findbugs.annotations.Nullable;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.security.authentication.*;
 import io.reactivex.Flowable;
@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
 import ru.pudgy.vertex.model.repository.AccountRepository;
 import ru.pudgy.vertex.model.repository.SchemaRepository;
-
 import javax.inject.Singleton;
 
 import java.util.*;
@@ -50,14 +49,14 @@ public class AuthenticationProviderUserPassword implements AuthenticationProvide
                                                 Map<String, Object> attributes = new HashMap<>();
                                                 attributes.put(ACCOUNT_ATTRIBUTES, acc);
                                                 attributes.put(SCHEMA_ATTRIBUTES, sch);
-                                                return Flowable.just(
-                                                        (AuthenticationResponse) new UserDetails(
-                                                                account.getName(),
-                                                                roles /*List.of("ROLE_USER")*/,   // TODO add roles to Account
-                                                                attributes/*Map.of(ACCOUNT_ATTRIBUTES, acc, SCHEMA_ATTRIBUTES, sch)*/)
-                                                );
+                                                return Flowable.just( AuthenticationResponse.success(account.getName(), roles, attributes));
+//                                                        (AuthenticationResponse) new ServerAuthentication(
+//                                                                account.getName(),
+//                                                                roles /*List.of("ROLE_USER")*/,   // TODO add roles to Account
+//                                                                attributes/*Map.of(ACCOUNT_ATTRIBUTES, acc, SCHEMA_ATTRIBUTES, sch)*/)
+//                                                );
                                             })
                         )
-                        .orElse(Flowable.just(new AuthenticationFailed(AuthenticationFailureReason.USER_NOT_FOUND)));
+                        .orElse(Flowable.just(AuthenticationResponse.failure(AuthenticationFailureReason.USER_NOT_FOUND)));
     }
 }

@@ -1,5 +1,6 @@
 package ru.pudgy.vertex.rest.ctrl;
 
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.model.Page;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
@@ -8,14 +9,12 @@ import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
 import lombok.RequiredArgsConstructor;
 import ru.pudgy.vertex.exceptions.NotAuthorizedException;
-import ru.pudgy.vertex.model.entity.Todo;
 import ru.pudgy.vertex.rest.dto.*;
 import ru.pudgy.vertex.rest.mappers.StatisticMapper;
 import ru.pudgy.vertex.rest.mappers.TodoMapper;
 import ru.pudgy.vertex.rest.security.SecurityHelper;
 import ru.pudgy.vertex.usecase.todo.*;
 
-import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;

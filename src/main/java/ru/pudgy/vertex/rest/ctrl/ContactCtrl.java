@@ -1,20 +1,19 @@
 package ru.pudgy.vertex.rest.ctrl;
 
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.*;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
 import lombok.RequiredArgsConstructor;
-import ru.pudgy.result.Result;
-import ru.pudgy.vertex.exceptions.NotAuthorizedException;
+import ru.pudgy.common.result.Result;
 import ru.pudgy.vertex.rest.dto.*;
 import ru.pudgy.vertex.rest.mappers.ContactMapper;
 import ru.pudgy.vertex.rest.mappers.ErrorMapper;
 import ru.pudgy.vertex.rest.security.SecurityHelper;
 import ru.pudgy.vertex.usecase.person.contact.*;
 
-import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;

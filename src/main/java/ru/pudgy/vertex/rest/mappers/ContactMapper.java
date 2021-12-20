@@ -13,7 +13,6 @@ import ru.pudgy.vertex.rest.dto.ContactNewDto;
 import ru.pudgy.vertex.usecase.dictionary.TypeOfContactByIdUsecase;
 
 import javax.inject.Inject;
-import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @Mapper(config = AppMapperConfig.class)

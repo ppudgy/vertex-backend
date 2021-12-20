@@ -8,10 +8,8 @@ import ru.pudgy.vertex.model.entity.Note;
 import ru.pudgy.vertex.model.entity.Schemata;
 import ru.pudgy.vertex.model.repository.NoteRepository;
 
-import javax.annotation.Nullable;
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
-import java.util.Optional;
 import java.util.UUID;
 
 @Singleton

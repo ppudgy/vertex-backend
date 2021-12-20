@@ -9,24 +9,24 @@
   <parent>
     <groupId>io.micronaut</groupId>
     <artifactId>micronaut-parent</artifactId>
-    <version>2.4.2</version>
+    <version>3.2.3</version>
   </parent>
 
   <properties>
-    <jdk.version>15</jdk.version>
+    <jdk.version>17</jdk.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <micronaut.version>2.4.2</micronaut.version>
-    <micronaut.security.version>2.4.2</micronaut.security.version>
-    <micronaut.data.version>2.4.1</micronaut.data.version>
-    <micronaut.openapi.version>2.4.0</micronaut.openapi.version>
+    <micronaut.version>3.2.3</micronaut.version>
+    <micronaut.security.version>3.2.0</micronaut.security.version>
+    <micronaut.data.version>3.2.2</micronaut.data.version>
+    <micronaut.openapi.version>3.2.0</micronaut.openapi.version>
     <exec.mainClass>ru.pudgy.vertex.Application</exec.mainClass>
     <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
     <maven-failsafe-plugin.version>2.22.2</maven-failsafe-plugin.version>
-    <maven.org.projectlombok.version>1.18.12</maven.org.projectlombok.version>
+    <maven.org.projectlombok.version>1.18.22</maven.org.projectlombok.version>
     <mapstruct.version>1.4.2.Final</mapstruct.version>
-    <swagger.version>2.1.1</swagger.version>
-    <assertj.version>3.11.1</assertj.version>
+    <swagger.version>2.1.11</swagger.version>
+    <assertj.version>3.21.0</assertj.version>
 
     <glagol.version>1.0</glagol.version>
   </properties>
@@ -53,6 +53,18 @@
 
 
   <dependencies>
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <version>1</version>
+    </dependency>
+    <dependency>
+      <groupId>io.reactivex.rxjava2</groupId>
+      <artifactId>rxjava</artifactId>
+      <version>2.2.21</version>
+    </dependency>
+
+
     <dependency>
       <groupId>ru.pudgy.glagol</groupId>
       <artifactId>glagol-text</artifactId>
@@ -140,7 +152,7 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.2.3</version>
+      <version>1.2.8</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
@@ -168,7 +180,7 @@
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-crypto</artifactId>
-      <version>5.2.1.RELEASE</version>
+      <version>5.5.1</version>
     </dependency>
     <dependency>
       <groupId>commons-logging</groupId>
@@ -192,12 +204,7 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.1</version>
         <configuration>
-          <encoding>UTF-8</encoding>
-          <source>15</source>
-          <target>15</target>
           <release>${jdk.version}</release>
-          <fork>true</fork>
-          <release>15</release>
           <compilerArgs>--enable-preview</compilerArgs>
           <annotationProcessorPaths>
             <path>
@@ -313,25 +320,6 @@
               <goal>integration-test</goal>
               <goal>verify</goal>
             </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-toolchains-plugin</artifactId>
-        <version>3.0.0</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>toolchain</goal>
-            </goals>
-            <configuration>
-              <toolchains>
-                <jdk>
-                  <version>15</version>
-                </jdk>
-              </toolchains>
-            </configuration>
           </execution>
         </executions>
       </plugin>

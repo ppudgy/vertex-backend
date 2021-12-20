@@ -1,6 +1,7 @@
 package ru.pudgy.vertex.usecase.note;
 
 
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +10,6 @@ import ru.pudgy.vertex.model.entity.Schemata;
 import ru.pudgy.vertex.model.repository.NoteRepository;
 import ru.pudgy.vertex.srvc.TextService;
 
-import javax.annotation.Nullable;
 import javax.inject.Singleton;
 import java.util.Optional;
 import java.util.UUID;
