@@ -44,7 +44,7 @@ npm-debug.log
 # Binaries
 *.exe
 target
-static
+#static
 
 # Eclipse project file
 *.classpath
