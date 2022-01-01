@@ -1,4 +1,4 @@
-FROM openjdk:15
+FROM openjdk:17
 
 COPY target/vertex*.jar /opt/vertex/vertex.jar
 WORKDIR /opt/vertex

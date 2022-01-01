@@ -6,8 +6,7 @@
 
 
 create table refresh_token (
--- pgsql    id bigserial not null,
-    id bigserial auto_increment,
+    id uuid not null,
     username varchar(256) not null,
     refresh_token varchar(1024) not null,
     revoked int,

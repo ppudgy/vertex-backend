@@ -26,8 +26,13 @@ micronaut:
         access:
           - isAnonymous()
       -
-        pattern: /Vertex.js
+        pattern: /Main.js
         http-method: GET
+        access:
+          - isAnonymous()
+      -
+        pattern: /login
+        http-method: POST
         access:
           - isAnonymous()
 

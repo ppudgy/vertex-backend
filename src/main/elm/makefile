@@ -1,7 +1,7 @@
 ## makefile
 
-site=../resource/static/
-site_files=index.html Vertex.js
+site=../resources/static/
+site_files=index.html Main.js
 
 
 
@@ -10,7 +10,7 @@ all: copy
 
 copy: $(site_files)
 	cp index.html $(site)
-	cp Vertex.js $(site)
+	cp Main.js $(site)
 
 
 %.js: src/%.elm

@@ -9,13 +9,10 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface RefreshTokenRepository extends CrudRepository<RefreshToken, Long> {
-    RefreshToken save(@NonNull @NotBlank String username,
-                      @NonNull @NotBlank String refreshToken,
-                      @NonNull @NotNull Boolean revoked,
-                      @NonNull @NotNull Instant dateCreated);
+public interface RefreshTokenRepository extends CrudRepository<RefreshToken, UUID> {
 
     Optional<RefreshToken> findByRefreshToken(@NonNull @NotBlank String refreshToken);
 

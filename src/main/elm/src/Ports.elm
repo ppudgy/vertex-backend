@@ -1,4 +1,3 @@
-port module Ports exposing (storeToken)
+port module Ports exposing (storeAuth)
 
-
-port storeToken : Maybe String -> Cmd msg
+port storeAuth : Maybe String -> Cmd msg

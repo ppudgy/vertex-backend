@@ -13,6 +13,7 @@ import ru.pudgy.vertex.model.repository.RefreshTokenRepository;
 
 import java.time.Instant;
 import java.util.Optional;
+import java.util.UUID;
 
 import static io.micronaut.security.errors.IssuingAnAccessTokenErrorCode.INVALID_GRANT;
 
@@ -32,7 +33,13 @@ public class CustomRefreshTokenPersistence implements RefreshTokenPersistence {
                 event.getAuthentication() != null &&
                 event.getAuthentication().getName() != null) {
             String payload = event.getRefreshToken();
-            refreshTokenRepository.save(event.getAuthentication().getName(), payload, false, Instant.now());
+            RefreshToken data = new RefreshToken();
+            data.setId(UUID.randomUUID());
+            data.setUsername(event.getAuthentication().getName());
+            data.setRefreshToken(payload);
+            data.setRevoked(false);
+            data.setDateCreated(Instant.now());
+            refreshTokenRepository.save(data);
         }
     }
 
